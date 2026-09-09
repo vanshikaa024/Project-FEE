@@ -1,0 +1,322 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Navy background */
+.login-page {
+  min-height: 100vh;
+  background: #171b3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+/* White card */
+.login-card {
+  width: 512px;
+  height: 760px;
+  background: rgb(29, 23, 23);
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+  padding: 35px 43px 0;
+}
+
+/* Logo + title */
+.brand {
+  text-align: center;
+  margin-bottom: 105px;
+}
+
+/* Your actual logo image */
+.brand-logo {
+  display: block;
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  margin: 0 auto 48px;
+}
+
+/* Inventory text */
+.brand p {
+  color: #777;
+  font-size: 14px;
+}
+
+/* Login content */
+.login-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Inputs */
+.input-group {
+  height: 56px;
+  display: flex;
+  align-items: center;
+
+  background: #272727;
+  border-radius: 8px;
+
+  margin-bottom: 18px;
+  padding: 0 16px;
+}
+
+.input-icon {
+  color: #999;
+  font-size: 16px;
+  margin-right: 14px;
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 0;
+
+  background: transparent;
+  border: none;
+  outline: none;
+
+  color: white;
+  font-size: 14px;
+}
+
+.input-group input::placeholder {
+  color: #999;
+}
+
+/* Show password */
+.password-toggle {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Remember + forgot */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 22px 0 32px;
+  font-size: 13px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #777;
+}
+
+.remember input {
+  width: 15px;
+  height: 15px;
+  accent-color: #6c63ff;
+}
+
+.forgot-link {
+  color: #777;
+  text-decoration: none;
+}
+
+/* Purple button */
+.login-btn {
+  width: 100%;
+  height: 56px;
+
+  background: #6c63ff;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #5a52e8;
+}
+
+/* Sign up */
+.signup-text {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  margin-top: 28px;
+}
+
+.signup-text a {
+  color: #ff7300;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Warehouse illustration */
+.warehouse {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 180px;
+
+  pointer-events: none;
+}
+
+/* Building */
+.warehouse-building {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 230px;
+  height: 125px;
+}
+
+.roof {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 0;
+  height: 0;
+
+  border-left: 115px solid transparent;
+  border-right: 115px solid transparent;
+  border-bottom: 65px solid #8b796b;
+}
+
+.warehouse-body {
+  position: absolute;
+  bottom: 0;
+  left: 15px;
+
+  width: 200px;
+  height: 85px;
+
+  background: #756d66;
+  border: 2px solid #9a8878;
+}
+
+.warehouse-door {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 55px;
+  height: 65px;
+
+  background: #5e5b58;
+  border: 2px solid #b5a18f;
+}
+
+.warehouse-window {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+
+  width: 40px;
+  height: 28px;
+
+  border: 2px solid #ff9a4a;
+}
+
+/* Boxes */
+.warehouse-box {
+  position: absolute;
+  background: #c68b62;
+  border: 2px solid #e39a67;
+}
+
+.box-1 {
+  width: 65px;
+  height: 45px;
+  bottom: 5px;
+  left: 65px;
+}
+
+.box-2 {
+  width: 50px;
+  height: 38px;
+  bottom: 5px;
+  right: 70px;
+}
+
+.box-3 {
+  width: 45px;
+  height: 35px;
+  bottom: 50px;
+  right: 105px;
+}
+
+.box-4 {
+  width: 40px;
+  height: 30px;
+  bottom: 5px;
+  left: 135px;
+}
+
+/* Crane */
+.warehouse-crane {
+  position: absolute;
+  right: 15px;
+  bottom: 0;
+
+  width: 65px;
+  height: 150px;
+}
+
+.crane-support {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+
+  width: 8px;
+  height: 135px;
+
+  background: #8b796b;
+  transform: rotate(18deg);
+  transform-origin: bottom;
+}
+
+.crane-arm {
+  position: absolute;
+  right: 0;
+  top: 10px;
+
+  width: 65px;
+  height: 8px;
+
+  background: #8b796b;
+  transform: rotate(-18deg);
+  transform-origin: right;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .login-page {
+    align-items: center;
+  }
+
+  .login-card {
+    width: 100%;
+    height: 100vh;
+    min-height: 650px;
+    border-radius: 0;
+    padding: 35px 28px 0;
+  }
+}
