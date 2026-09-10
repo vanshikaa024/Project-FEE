@@ -66,7 +66,9 @@ function Sidebar({
         {sidebarOpen && (
           <div>
             <h2>SmartShelf</h2>
-            <span>Inventory Manager</span>
+            <span>
+              Inventory Manager
+            </span>
           </div>
         )}
       </div>
@@ -86,14 +88,18 @@ function Sidebar({
               end={item.path === "/"}
               className={({ isActive }) =>
                 `sidebar-link ${
-                  isActive ? "active" : ""
+                  isActive
+                    ? "active"
+                    : ""
                 }`
               }
             >
               <Icon size={19} />
 
               {sidebarOpen && (
-                <span>{item.label}</span>
+                <span>
+                  {item.label}
+                </span>
               )}
             </NavLink>
           );
@@ -112,7 +118,9 @@ function Sidebar({
           <PlusCircle size={19} />
 
           {sidebarOpen && (
-            <span>Add New Product</span>
+            <span>
+              Add New Product
+            </span>
           )}
         </NavLink>
 
@@ -123,7 +131,10 @@ function Sidebar({
           <FileText size={19} />
 
           {sidebarOpen && (
-            <span>Generate Inventory Report</span>
+            <span>
+              Generate Inventory
+              Report
+            </span>
           )}
         </button>
       </div>
@@ -135,8 +146,14 @@ function Sidebar({
 
         {sidebarOpen && (
           <div className="sidebar-user-info">
-            <strong>{user?.name}</strong>
-            <span>{user?.role}</span>
+            <strong>
+              {user?.name || "Manager"}
+            </strong>
+
+            <span>
+              {user?.role ||
+                "Inventory Manager"}
+            </span>
           </div>
         )}
 

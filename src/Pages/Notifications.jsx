@@ -1,110 +1,207 @@
 import {
-  Bell,
-  CheckCircle,
   AlertTriangle,
-  Info,
-  XCircle,
-  Check,
+  Bell,
+  CheckCircle2,
+  Package,
+  TrendingDown,
 } from "lucide-react";
 
 function Notifications({
-  notifications,
-  onRead,
+  activities = [],
+  products = [],
 }) {
-  const getIcon = (type) => {
-    if (type === "success")
-      return <CheckCircle size={21} />;
+  const safeActivities =
+    Array.isArray(activities)
+      ? activities
+      : [];
 
-    if (type === "warning")
-      return <AlertTriangle size={21} />;
+  const lowStock = (
+    Array.isArray(products)
+      ? products
+      : []
+  ).filter(
+    (product) =>
+      Number(product.stock || 0) <
+      Number(product.minStock || 0)
+  );
 
-    if (type === "danger")
-      return <XCircle size={21} />;
+  const systemAlerts =
+    lowStock.slice(0, 5).map(
+      (product) => ({
+        id: `stock-${product.id}`,
+        type:
+          Number(product.stock || 0) ===
+          0
+            ? "critical"
+            : "warning",
 
-    return <Info size={21} />;
-  };
+        title:
+          Number(product.stock || 0) ===
+          0
+            ? `${product.name} is out of stock`
+            : `${product.name} is below minimum stock`,
+
+        message: `Available: ${product.stock} units · Minimum: ${product.minStock} units`,
+
+        time: "Current inventory",
+      })
+    );
 
   return (
-    <main className="page">
-      <div className="page-heading">
+    <div className="notifications-page">
+      <div className="page-header">
         <div>
           <p className="eyebrow">
-            SYSTEM ACTIVITY
+            INVENTORY ALERTS
           </p>
 
-          <h1>Inventory Activity & Alerts</h1>
+          <h1>
+            Notifications & Activity
+          </h1>
 
-          <p className="page-subtitle">
-            Stay informed about stock changes, completed
-            orders and products requiring attention.
+          <p>
+            Important stock alerts and
+            the latest inventory events.
           </p>
         </div>
       </div>
 
-      <section className="content-card">
-        <div className="card-header">
+      {systemAlerts.length > 0 && (
+        <div
+          className="analytics-panel"
+          style={{
+            marginBottom: 18,
+          }}
+        >
+          <div className="panel-heading">
+            <div>
+              <h2>
+                Stock Alerts
+              </h2>
+
+              <p>
+                These products need
+                attention.
+              </p>
+            </div>
+
+            <AlertTriangle size={20} />
+          </div>
+
+          <div className="notification-list">
+            {systemAlerts.map(
+              (alert) => (
+                <div
+                  className="notification-row"
+                  key={alert.id}
+                >
+                  <div className="notification-row-icon">
+                    <AlertTriangle
+                      size={18}
+                    />
+                  </div>
+
+                  <div className="notification-content">
+                    <strong>
+                      {alert.title}
+                    </strong>
+
+                    <p>
+                      {alert.message}
+                    </p>
+                  </div>
+
+                  <span className="notification-time">
+                    {alert.time}
+                  </span>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="analytics-panel">
+        <div className="panel-heading">
           <div>
-            <h2>Recent Notifications</h2>
+            <h2>
+              Activity Feed
+            </h2>
 
             <p>
-              These alerts are generated automatically
-              when inventory activity occurs.
+              Sales, restocks, products
+              and reports.
             </p>
           </div>
 
-          <Bell size={22} />
+          <Bell size={20} />
         </div>
 
-        <div className="notification-list">
-          {notifications.map((notification) => (
-            <div
-              className={`notification-item ${
-                notification.read ? "read" : ""
-              }`}
-              key={notification.id}
-            >
-              <div
-                className={`notification-icon ${notification.type}`}
-              >
-                {getIcon(notification.type)}
-              </div>
-
-              <div className="notification-content">
-                <strong>
-                  {notification.title}
-                </strong>
-
-                <p>{notification.message}</p>
-
-                <span>{notification.time}</span>
-              </div>
-
-              {!notification.read && (
-                <button
-                  className="mark-read-btn"
-                  onClick={() =>
-                    onRead(notification.id)
-                  }
-                  title="Mark as read"
+        {safeActivities.length ? (
+          <div className="notification-list">
+            {safeActivities.map(
+              (item) => (
+                <div
+                  className="notification-row"
+                  key={item.id}
                 >
-                  <Check size={17} />
-                </button>
-              )}
-            </div>
-          ))}
+                  <div className="notification-row-icon">
+                    {item.type ===
+                    "warning" ? (
+                      <AlertTriangle
+                        size={18}
+                      />
+                    ) : item.type ===
+                      "success" ? (
+                      <CheckCircle2
+                        size={18}
+                      />
+                    ) : item.type ===
+                      "danger" ? (
+                      <TrendingDown
+                        size={18}
+                      />
+                    ) : (
+                      <Package
+                        size={18}
+                      />
+                    )}
+                  </div>
 
-          {notifications.length === 0 && (
-            <div className="empty-state">
-              <Bell size={35} />
-              <h3>No notifications</h3>
-              <p>
-                New inventory activity will appear here.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-    </main>
+                  <div className="notification-content">
+                    <strong>
+                      {item.message}
+                    </strong>
+
+                    <p>
+                      SmartShelf
+                      inventory event
+                    </p>
+                  </div>
+
+                  <span className="notification-time">
+                    {item.time}
+                  </span>
+                </div>
+              )
+            )}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <Bell size={28} />
+
+            <h3>
+              No activity yet
+            </h3>
+
+            <p>
+              Inventory events will
+              appear here as you work.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

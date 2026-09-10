@@ -12,7 +12,6 @@ function Products({
   searchTerm = ""
 }) {
 
-
   const filteredProducts =
     products.filter((product) => {
 
@@ -21,33 +20,26 @@ function Products({
           .toLowerCase()
           .trim();
 
-
       if (!search) {
         return true;
       }
 
-
       return (
-        product.name
+        String(product.name || "")
           .toLowerCase()
           .includes(search) ||
 
-        product.category
+        String(product.category || "")
           .toLowerCase()
           .includes(search)
       );
-
     });
 
 
   return (
-
     <div className="page">
 
-
-      {/* ============================================
-          HEADER
-      ============================================ */}
+      {/* HEADER */}
 
       <div className="page-header">
 
@@ -58,8 +50,8 @@ function Products({
           </h1>
 
           <p>
-            View and monitor every item currently managed
-            in your SmartShelf inventory.
+            View and monitor every item currently
+            managed in your SmartShelf inventory.
           </p>
 
         </div>
@@ -67,9 +59,7 @@ function Products({
       </div>
 
 
-      {/* ============================================
-          SEARCH STATUS
-      ============================================ */}
+      {/* SEARCH STATUS */}
 
       {searchTerm.trim() && (
 
@@ -78,23 +68,18 @@ function Products({
           <Search size={17} />
 
           <span>
-
             Showing results for:
-
             <strong>
               {" "}
               "{searchTerm}"
             </strong>
-
           </span>
 
           <span className="result-count">
-
             {filteredProducts.length} product
             {filteredProducts.length !== 1
               ? "s"
               : ""}
-
           </span>
 
         </div>
@@ -102,9 +87,7 @@ function Products({
       )}
 
 
-      {/* ============================================
-          PRODUCT COUNT
-      ============================================ */}
+      {/* PRODUCT COUNT */}
 
       <div className="products-summary">
 
@@ -121,9 +104,7 @@ function Products({
       </div>
 
 
-      {/* ============================================
-          PRODUCTS
-      ============================================ */}
+      {/* PRODUCTS */}
 
       {filteredProducts.length > 0 ? (
 
@@ -132,14 +113,13 @@ function Products({
           {filteredProducts.map(
             (product) => {
 
-
               const isLowStock =
-                Number(product.stock) <
-                Number(product.minStock);
+                Number(product.stock || 0) <
+                Number(product.minStock || 0);
 
 
               const isOutOfStock =
-                Number(product.stock) === 0;
+                Number(product.stock || 0) === 0;
 
 
               return (
@@ -148,6 +128,56 @@ function Products({
                   className="product-card"
                   key={product.id}
                 >
+
+                  {/* =================================
+                      PRODUCT IMAGE
+                      ================================= */}
+
+                  <div className="product-image-wrapper">
+
+                    {product.image ? (
+
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="product-image"
+
+                        onError={(event) => {
+
+                          event.currentTarget.style.display =
+                            "none";
+
+                          const fallback =
+                            event.currentTarget
+                              .nextElementSibling;
+
+                          if (fallback) {
+                            fallback.style.display =
+                              "flex";
+                          }
+
+                        }}
+                      />
+
+                    ) : null}
+
+
+                    <div
+                      className="product-image-fallback"
+
+                      style={{
+                        display:
+                          product.image
+                            ? "none"
+                            : "flex"
+                      }}
+                    >
+
+                      <Package size={42} />
+
+                    </div>
+
+                  </div>
 
 
                   {/* PRODUCT TOP */}
@@ -211,11 +241,13 @@ function Products({
                     />
 
                     <strong>
+
                       {Number(
-                        product.price
+                        product.price || 0
                       ).toLocaleString(
                         "en-IN"
                       )}
+
                     </strong>
 
                   </div>
@@ -297,10 +329,6 @@ function Products({
 
       ) : (
 
-        /* ==========================================
-           NO RESULTS
-        ========================================== */
-
         <div className="no-products">
 
           <Search size={36} />
@@ -319,9 +347,7 @@ function Products({
       )}
 
     </div>
-
   );
-
 }
 
 

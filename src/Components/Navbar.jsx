@@ -1,246 +1,208 @@
-import { useState } from "react";
 import {
   Menu,
-  Bell,
-  User,
   Search,
   X,
-  Package
+  Bell,
+  User,
+  Package,
+  AlertTriangle,
 } from "lucide-react";
 
-import { Link, useNavigate } from "react-router";
+import { useMemo } from "react";
+import { useNavigate } from "react-router";
 
 function Navbar({
   sidebarOpen,
   setSidebarOpen,
   user,
-  products,
+  products = [],
   searchTerm,
-  setSearchTerm
+  setSearchTerm,
 }) {
   const navigate = useNavigate();
 
-  const [showResults, setShowResults] = useState(false);
+  const safeProducts = Array.isArray(
+    products
+  )
+    ? products
+    : [];
 
-  // Search products by name OR category
-  const searchResults = products
-    .filter((product) => {
-      const search = searchTerm.toLowerCase().trim();
-
-      if (!search) return false;
-
-      return (
-        product.name.toLowerCase().includes(search) ||
-        product.category.toLowerCase().includes(search)
-      );
-    })
-    .slice(0, 6);
-
-  // When user types
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-
-    setSearchTerm(value);
-
-    if (value.trim() !== "") {
-      setShowResults(true);
-    } else {
-      setShowResults(false);
+  const results = useMemo(() => {
+    if (!searchTerm?.trim()) {
+      return [];
     }
-  };
 
-  // Press Enter
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
+    const query =
+      searchTerm.toLowerCase();
 
-    if (searchTerm.trim() !== "") {
-      navigate("/products");
-      setShowResults(false);
-    }
-  };
-
-  // Clear search
-  const clearSearch = () => {
-    setSearchTerm("");
-    setShowResults(false);
-  };
-
-  // Click a result
-  const handleResultClick = () => {
-    navigate("/products");
-    setShowResults(false);
-  };
+    return safeProducts
+      .filter(
+        (product) =>
+          product.name
+            ?.toLowerCase()
+            .includes(query) ||
+          product.category
+            ?.toLowerCase()
+            .includes(query)
+      )
+      .slice(0, 5);
+  }, [safeProducts, searchTerm]);
 
   return (
-    <div className="navbar">
-
-      {/* LEFT SIDE */}
+    <header className="navbar">
       <div className="navbar-left">
-
-        {/* MENU BUTTON */}
         <button
           className="menu-btn"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={() =>
+            setSidebarOpen(
+              !sidebarOpen
+            )
+          }
+          aria-label="Toggle sidebar"
         >
-          <Menu size={22} />
+          <Menu size={20} />
         </button>
 
-
-        {/* SEARCH AREA */}
         <div className="navbar-search-wrapper">
-
-          <form
-            className="navbar-search"
-            onSubmit={handleSearchSubmit}
-          >
-
+          <div className="navbar-search">
             <Search
-              size={19}
+              size={16}
               className="search-icon"
             />
 
             <input
               type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              onFocus={() => {
-                if (searchTerm.trim() !== "") {
-                  setShowResults(true);
-                }
-              }}
               placeholder="Search products, categories..."
+              value={searchTerm}
+              onChange={(event) =>
+                setSearchTerm(
+                  event.target.value
+                )
+              }
             />
 
-            {/* CLEAR BUTTON */}
             {searchTerm && (
               <button
-                type="button"
                 className="search-clear-btn"
-                onClick={clearSearch}
+                onClick={() =>
+                  setSearchTerm("")
+                }
               >
-                <X size={17} />
+                <X size={14} />
               </button>
             )}
+          </div>
 
-          </form>
-
-
-          {/* SEARCH DROPDOWN */}
-          {showResults && searchTerm.trim() !== "" && (
-
+          {searchTerm && (
             <div className="search-dropdown">
-
-              {searchResults.length > 0 ? (
-
+              {results.length ? (
                 <>
                   <div className="search-dropdown-title">
                     Products
                   </div>
 
-                  {searchResults.map((product) => (
+                  {results.map(
+                    (product) => (
+                      <button
+                        className="search-result"
+                        key={product.id}
+                        onClick={() => {
+                          navigate(
+                            "/products"
+                          );
+                          setSearchTerm(
+                            ""
+                          );
+                        }}
+                      >
+                        <div className="search-product-icon">
+                          <Package
+                            size={15}
+                          />
+                        </div>
 
-                    <button
-                      key={product.id}
-                      className="search-result"
-                      onClick={handleResultClick}
-                    >
+                        <div className="search-product-info">
+                          <strong>
+                            {product.name}
+                          </strong>
 
-                      <div className="search-product-icon">
-                        <Package size={17} />
-                      </div>
+                          <span>
+                            {product.category}
+                          </span>
+                        </div>
 
-                      <div className="search-product-info">
+                        <div className="search-product-stock">
+                          <strong>
+                            {product.stock}
+                          </strong>
 
-                        <strong>
-                          {product.name}
-                        </strong>
-
-                        <span>
-                          {product.category}
-                        </span>
-
-                      </div>
-
-                      <div className="search-product-stock">
-
-                        <strong>
-                          {product.stock}
-                        </strong>
-
-                        <span>
-                          in stock
-                        </span>
-
-                      </div>
-
-                    </button>
-
-                  ))}
+                          <span>
+                            stock
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  )}
 
                   <button
                     className="view-all-results"
-                    onClick={handleSearchSubmit}
+                    onClick={() => {
+                      navigate(
+                        "/products"
+                      );
+                      setSearchTerm("");
+                    }}
                   >
-                    View all matching products →
+                    View all products
                   </button>
-
                 </>
-
               ) : (
-
                 <div className="search-no-results">
-
-                  <Search size={20} />
+                  <AlertTriangle
+                    size={17}
+                  />
 
                   <div>
-                    <strong>No products found</strong>
+                    <strong>
+                      No products found
+                    </strong>
 
                     <span>
-                      Try a different product name or category.
+                      Try another product
+                      or category.
                     </span>
                   </div>
-
                 </div>
-
               )}
-
             </div>
-
           )}
-
         </div>
-
       </div>
 
-
-      {/* RIGHT SIDE */}
       <div className="navbar-right">
-
-        {/* NOTIFICATIONS */}
-        <Link
-          to="/notifications"
+        <button
           className="notification-icon"
+          onClick={() =>
+            navigate(
+              "/notifications"
+            )
+          }
+          title="Notifications"
         >
-          <Bell size={20} />
-        </Link>
+          <Bell size={17} />
+        </button>
 
-
-        {/* USER */}
         <div className="navbar-user">
-
           <div className="navbar-user-icon">
-            <User size={17} />
+            <User size={16} />
           </div>
 
           <span>
-            {user?.name}
+            {user?.name || "Manager"}
           </span>
-
         </div>
-
       </div>
-
-    </div>
+    </header>
   );
 }
 
