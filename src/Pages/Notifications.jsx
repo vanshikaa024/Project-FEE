@@ -165,7 +165,7 @@ function Notifications({
                       <Package
                         size={18}
                       />
-                    )}
+                    )} 
                   </div>
 
                   <div className="notification-content">

@@ -3,7 +3,9 @@ import {
   Package,
   Tag,
   IndianRupee,
-  Boxes
+  Boxes,
+  BoxIcon,
+  BoxesIcon
 } from "lucide-react";
 
 
@@ -89,19 +91,11 @@ function Products({
 
       {/* PRODUCT COUNT */}
 
-      <div className="products-summary">
-
-        <div>
-
-          <Package size={20} />
-
-          <span>
-            {filteredProducts.length} Products
-          </span>
-
-        </div>
-
-      </div>
+<div className="products-summary-title">
+  <Package size={24} />
+  <span>{products.length}</span>
+  <span>Products</span>
+</div>
 
 
       {/* PRODUCTS */}
@@ -235,7 +229,7 @@ function Products({
                   {/* PRICE */}
 
                   <div className="product-price">
-
+                        
                     <IndianRupee
                       size={17}
                     />
@@ -258,35 +252,23 @@ function Products({
                   <div className="product-stock-row">
 
                     <div>
-
-                      <Boxes size={16} />
-
+                      <div className="Box-logo">
+                      <BoxesIcon size={20} />
+                      </div>
                       <span>
-                        Current Stock
+                           Current Stock :  <strong>
+                      {product.stock}
+                    </strong>
                       </span>
 
                     </div>
 
-                    <strong>
-                      {product.stock}
-                    </strong>
+                    
 
                   </div>
 
 
-                  {/* MIN STOCK */}
-
-                  <div className="product-detail-row">
-
-                    <span>
-                      Minimum Level
-                    </span>
-
-                    <strong>
-                      {product.minStock}
-                    </strong>
-
-                  </div>
+                 
 
 
                   {/* SOLD */}
@@ -294,29 +276,17 @@ function Products({
                   <div className="product-detail-row">
 
                     <span>
-                      Sold in 30 days
-                    </span>
-
-                    <strong>
+                      Sold in 30 days :   <strong>
                       {product.sold30}
                     </strong>
-
-                  </div>
-
-
-                  {/* CONDITION */}
-
-                  <div className="product-detail-row">
-
-                    <span>
-                      Condition
                     </span>
 
-                    <strong>
-                      {product.condition}
-                    </strong>
+                  
 
                   </div>
+
+
+                 
 
                 </div>
 

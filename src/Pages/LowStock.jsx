@@ -5,7 +5,8 @@ import {
   Package,
   Plus,
   CheckCircle,
-} from "lucide-react";
+} 
+from "lucide-react";
 
 function LowStock({ products, onRestock }) {
   const [selectedProduct, setSelectedProduct] =

@@ -840,3 +840,51 @@
     left: -170px;
   }
 }
+
+/* =====================================================
+   LOGIN / SIGN UP SWITCH
+===================================================== */
+
+.smart-auth-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 17px;
+  color: #8491a5;
+  font-size: 12px;
+}
+
+.smart-auth-switch button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #ff6b00;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.smart-auth-switch button:hover {
+  color: #ff9a4d;
+  text-decoration: underline;
+}
+
+/* Success message */
+
+.smart-error.smart-success {
+  color: #9de8bd;
+  background: rgba(40, 190, 110, 0.08);
+  border-color: rgba(40, 190, 110, 0.22);
+}
+
+
+.smart-input-wrapper input:-webkit-autofill,
+.smart-input-wrapper input:-webkit-autofill:hover,
+.smart-input-wrapper input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  caret-color: #ffffff;
+  transition: background-color 9999s ease-in-out 0s;
+}
+

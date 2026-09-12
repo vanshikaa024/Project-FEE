@@ -2,11 +2,13 @@ import "./App.css";
 import "./index.css";
 
 import { useEffect, useState } from "react";
+
 import {
   BrowserRouter,
   Routes,
   Route,
   Navigate,
+  useNavigate,
 } from "react-router";
 
 import Sidebar from "./Components/Sidebar";
@@ -20,6 +22,50 @@ import LowStock from "./Pages/LowStock";
 import Orders from "./Pages/Orders";
 import Analytics from "./Pages/Analytics";
 import Notifications from "./Pages/Notifications";
+
+
+/* =====================================================
+   PRODUCT IMAGE LINKS
+   ===================================================== */
+
+const productImages = {
+  "Wireless Mouse":
+    "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=900&q=85",
+
+  Keyboard:
+    "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=85",
+
+  "A4 Notebook":
+    "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=900&q=85",
+
+  "USB-C Cable":
+    "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=900&q=85",
+
+  "Ergonomic Desk Chair":
+    "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?auto=format&fit=crop&w=900&q=85",
+
+  "Mechanical Pencil":
+    "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=900&q=85",
+
+  "27-inch 4K Monitor":
+    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=900&q=85",
+
+  "Sticky Notes Pack":
+    "https://images.unsplash.com/photo-1586282391129-76a6df230234?auto=format&fit=crop&w=900&q=85",
+
+  "Noise Cancelling Headphones":
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85",
+
+  "Adjustable Laptop Stand":
+    "https://media-ik.croma.com/Croma%20Assets/Computers%20Peripherals/Computer%20Accessories%20and%20Tablets%20Accessories/Images/311004_tsbrye.png",
+
+  "Bluetooth Speaker":
+    "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=85",
+
+  "Desk Organizer":
+    "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=900&q=85",
+};
+
 
 /* =====================================================
    DEFAULT PRODUCTS
@@ -36,9 +82,9 @@ const defaultProducts = [
     minStock: 10,
     sold30: 45,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Wireless Mouse"],
   },
+
   {
     id: 2,
     name: "Keyboard",
@@ -49,9 +95,9 @@ const defaultProducts = [
     minStock: 10,
     sold30: 38,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Keyboard"],
   },
+
   {
     id: 3,
     name: "A4 Notebook",
@@ -62,22 +108,22 @@ const defaultProducts = [
     minStock: 10,
     sold30: 24,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=800&q=80",
+    image: productImages["A4 Notebook"],
   },
+
   {
     id: 4,
     name: "USB-C Cable",
     category: "Accessories",
     price: 299,
     costPrice: 160,
-    stock: 14,
+    stock: 3,
     minStock: 8,
     sold30: 32,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=800&q=80",
+    image: productImages["USB-C Cable"],
   },
+
   {
     id: 5,
     name: "Ergonomic Desk Chair",
@@ -88,22 +134,22 @@ const defaultProducts = [
     minStock: 5,
     sold30: 6,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Ergonomic Desk Chair"],
   },
+
   {
     id: 6,
     name: "Mechanical Pencil",
     category: "Stationery",
     price: 45,
     costPrice: 20,
-    stock: 60,
-    minStock: 15,
+    stock: 40,
+    minStock: 10,
     sold30: 26,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Mechanical Pencil"],
   },
+
   {
     id: 7,
     name: "27-inch 4K Monitor",
@@ -114,9 +160,9 @@ const defaultProducts = [
     minStock: 5,
     sold30: 12,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80",
+    image: productImages["27-inch 4K Monitor"],
   },
+
   {
     id: 8,
     name: "Sticky Notes Pack",
@@ -127,22 +173,22 @@ const defaultProducts = [
     minStock: 15,
     sold30: 18,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1586282391129-76a6df230234?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Sticky Notes Pack"],
   },
+
   {
     id: 9,
     name: "Noise Cancelling Headphones",
     category: "Electronics",
     price: 4999,
     costPrice: 3200,
-    stock: 12,
+    stock: 4,
     minStock: 8,
     sold30: 28,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Noise Cancelling Headphones"],
   },
+
   {
     id: 10,
     name: "Adjustable Laptop Stand",
@@ -153,9 +199,9 @@ const defaultProducts = [
     minStock: 8,
     sold30: 13,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1616353071588-6f8f2f4d7f3a?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Adjustable Laptop Stand"],
   },
+
   {
     id: 11,
     name: "Bluetooth Speaker",
@@ -166,9 +212,9 @@ const defaultProducts = [
     minStock: 7,
     sold30: 15,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Bluetooth Speaker"],
   },
+
   {
     id: 12,
     name: "Desk Organizer",
@@ -179,891 +225,1607 @@ const defaultProducts = [
     minStock: 8,
     sold30: 9,
     condition: "Good",
-    image:
-      "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80",
+    image: productImages["Desk Organizer"],
   },
 ];
 
+
 /* =====================================================
-   DEMO ORDER HELPER
+   SAFE LOCAL STORAGE READER
    ===================================================== */
 
-const daysAgo = (days) => {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
+function readStorage(key, fallback) {
+  try {
+    const saved =
+      localStorage.getItem(key);
 
-  return date.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-};
+    if (!saved) {
+      return fallback;
+    }
+
+    return JSON.parse(saved);
+
+  } catch {
+    return fallback;
+  }
+}
+
+
+/* =====================================================
+   DEMO DATE
+   ===================================================== */
+
+function demoDate(daysAgo) {
+  const date =
+    new Date();
+
+  date.setDate(
+    date.getDate() - daysAgo
+  );
+
+  return date.toLocaleDateString(
+    "en-IN",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }
+  );
+}
+
 
 /* =====================================================
    DEMO ORDERS
-   These are historical sales.
-   They DO NOT decrease current stock.
+   These are historical demo sales.
+   They are NOT deducted from current stock.
    ===================================================== */
 
-const demoOrders = [
-  {
-    id: "ORD-1001",
-    productId: 2,
-    productName: "Keyboard",
-    quantity: 2,
-    price: 999,
-    total: 1998,
-    cost: 1300,
-    profit: 698,
-    status: "Completed",
-    date: daysAgo(1),
-  },
-  {
-    id: "ORD-1002",
-    productId: 1,
-    productName: "Wireless Mouse",
-    quantity: 3,
-    price: 599,
-    total: 1797,
-    cost: 1050,
-    profit: 747,
-    status: "Completed",
-    date: daysAgo(2),
-  },
-  {
-    id: "ORD-1003",
-    productId: 4,
-    productName: "USB-C Cable",
-    quantity: 5,
-    price: 299,
-    total: 1495,
-    cost: 800,
-    profit: 695,
-    status: "Completed",
-    date: daysAgo(3),
-  },
-  {
-    id: "ORD-1004",
-    productId: 9,
-    productName: "Noise Cancelling Headphones",
-    quantity: 2,
-    price: 4999,
-    total: 9998,
-    cost: 6400,
-    profit: 3598,
-    status: "Completed",
-    date: daysAgo(4),
-  },
-  {
-    id: "ORD-1005",
-    productId: 7,
-    productName: "27-inch 4K Monitor",
-    quantity: 1,
-    price: 18999,
-    total: 18999,
-    cost: 14500,
-    profit: 4499,
-    status: "Completed",
-    date: daysAgo(5),
-  },
-  {
-    id: "ORD-1006",
-    productId: 6,
-    productName: "Mechanical Pencil",
-    quantity: 12,
-    price: 45,
-    total: 540,
-    cost: 240,
-    profit: 300,
-    status: "Completed",
-    date: daysAgo(7),
-  },
-  {
-    id: "ORD-1007",
-    productId: 11,
-    productName: "Bluetooth Speaker",
-    quantity: 3,
-    price: 2199,
-    total: 6597,
-    cost: 4200,
-    profit: 2397,
-    status: "Completed",
-    date: daysAgo(9),
-  },
-  {
-    id: "ORD-1008",
-    productId: 10,
-    productName: "Adjustable Laptop Stand",
-    quantity: 2,
-    price: 1299,
-    total: 2598,
-    cost: 1500,
-    profit: 1098,
-    status: "Completed",
-    date: daysAgo(12),
-  },
-  {
-    id: "ORD-1009",
-    productId: 3,
-    productName: "A4 Notebook",
-    quantity: 8,
-    price: 80,
-    total: 640,
-    cost: 360,
-    profit: 280,
-    status: "Completed",
-    date: daysAgo(15),
-  },
-  {
-    id: "ORD-1010",
-    productId: 5,
-    productName: "Ergonomic Desk Chair",
-    quantity: 1,
-    price: 7499,
-    total: 7499,
-    cost: 5200,
-    profit: 2299,
-    status: "Completed",
-    date: daysAgo(18),
-  },
-];
+function makeDemoOrders() {
+  return [
+    {
+      id: "ORD-1001",
+      productId: 2,
+      productName: "Keyboard",
+      quantity: 2,
+      total: 1998,
+      cost: 1300,
+      profit: 698,
+      date: demoDate(5),
+    },
+
+    {
+      id: "ORD-1002",
+      productId: 1,
+      productName: "Wireless Mouse",
+      quantity: 3,
+      total: 1797,
+      cost: 1050,
+      profit: 747,
+      date: demoDate(4),
+    },
+
+    {
+      id: "ORD-1003",
+      productId: 4,
+      productName: "USB-C Cable",
+      quantity: 5,
+      total: 1495,
+      cost: 800,
+      profit: 695,
+      date: demoDate(3),
+    },
+
+    {
+      id: "ORD-1004",
+      productId: 9,
+      productName: "Noise Cancelling Headphones",
+      quantity: 2,
+      total: 9998,
+      cost: 6400,
+      profit: 3598,
+      date: demoDate(2),
+    },
+
+    {
+      id: "ORD-1005",
+      productId: 7,
+      productName: "27-inch 4K Monitor",
+      quantity: 1,
+      total: 18999,
+      cost: 14500,
+      profit: 4499,
+      date: demoDate(1),
+    },
+
+    {
+      id: "ORD-1006",
+      productId: 6,
+      productName: "Mechanical Pencil",
+      quantity: 12,
+      total: 540,
+      cost: 240,
+      profit: 300,
+      date: demoDate(0),
+    },
+  ];
+}
+
 
 /* =====================================================
    DEMO ACTIVITIES
    ===================================================== */
 
-const createDemoActivities = () => [
+const demoActivities = [
   {
-    id: "activity-1",
-    message: "Order ORD-1001 completed for Keyboard.",
+    id: "demo-activity-1",
+    message:
+      "Order ORD-1001 completed for Keyboard.",
     type: "success",
-    time: daysAgo(1),
+    time: demoDate(5),
   },
+
   {
-    id: "activity-2",
-    message: "Wireless Mouse is below its minimum stock level.",
+    id: "demo-activity-2",
+    message:
+      "Wireless Mouse is below its minimum stock level.",
     type: "warning",
-    time: daysAgo(2),
+    time: demoDate(4),
   },
+
   {
-    id: "activity-3",
-    message: "Order ORD-1004 completed for Noise Cancelling Headphones.",
+    id: "demo-activity-3",
+    message:
+      "Order ORD-1004 completed for Noise Cancelling Headphones.",
     type: "success",
-    time: daysAgo(4),
+    time: demoDate(2),
   },
+
   {
-    id: "activity-4",
-    message: "27-inch 4K Monitor sale recorded.",
+    id: "demo-activity-4",
+    message:
+      "27-inch 4K Monitor sale recorded.",
     type: "success",
-    time: daysAgo(5),
-  },
-  {
-    id: "activity-5",
-    message: "USB-C Cable stock requires attention.",
-    type: "warning",
-    time: daysAgo(3),
+    time: demoDate(1),
   },
 ];
 
+
 /* =====================================================
-   APP
+   MAIN APPLICATION
    ===================================================== */
 
-function App() {
+function SmartShelfApp() {
+
+  const navigate =
+    useNavigate();
+
+
   /* ===================================================
      LOGIN
      =================================================== */
 
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    () => localStorage.getItem("smartshelf_user") !== null
-  );
+  const [isLoggedIn, setIsLoggedIn] =
+    useState(
+      () =>
+        localStorage.getItem(
+          "smartshelf_user"
+        ) !== null
+    );
 
-  const [user, setUser] = useState(() => {
-    try {
-      const savedUser = localStorage.getItem("smartshelf_user");
-      return savedUser ? JSON.parse(savedUser) : null;
-    } catch {
-      return null;
-    }
-  });
+
+  const [user, setUser] =
+    useState(() =>
+      readStorage(
+        "smartshelf_user",
+        null
+      )
+    );
+
 
   /* ===================================================
      PRODUCTS
      =================================================== */
 
-  const [products, setProducts] = useState(() => {
-    try {
-      const savedProducts = localStorage.getItem("smartshelf_products");
+  const [products, setProducts] =
+    useState(() => {
 
-      if (savedProducts) {
-        const parsed = JSON.parse(savedProducts);
+      const saved =
+        readStorage(
+          "smartshelf_products",
+          null
+        );
 
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
+
+      if (
+        !Array.isArray(saved) ||
+        saved.length === 0
+      ) {
+
+        return defaultProducts;
+
       }
 
-      return defaultProducts;
-    } catch {
-      return defaultProducts;
-    }
-  });
+
+      /*
+        Merge saved products with defaults.
+
+        This is important because your old
+        localStorage products may not contain
+        image URLs.
+      */
+
+      return saved.map(
+        (product, index) => {
+
+          const matchingDefault =
+            defaultProducts.find(
+              (item) =>
+                item.id ===
+                  product.id ||
+                item.name ===
+                  product.name
+            ) ||
+            defaultProducts[
+              index %
+                defaultProducts.length
+            ];
+
+
+          return {
+
+            ...matchingDefault,
+
+            ...product,
+
+            price:
+              Number(
+                product.price ??
+                  matchingDefault.price ??
+                  0
+              ),
+
+            costPrice:
+              Number(
+                product.costPrice ??
+                  matchingDefault.costPrice ??
+                  0
+              ),
+
+            stock:
+              Number(
+                product.stock ??
+                  0
+              ),
+
+            minStock:
+              Number(
+                product.minStock ??
+                  matchingDefault.minStock ??
+                  0
+              ),
+
+            sold30:
+              Number(
+                product.sold30 ??
+                  matchingDefault.sold30 ??
+                  0
+              ),
+
+            condition:
+              product.condition ||
+              matchingDefault.condition ||
+              "Good",
+
+            image:
+              product.image ||
+              matchingDefault.image ||
+              "",
+          };
+        }
+      );
+
+    });
+
 
   /* ===================================================
      ORDERS
      =================================================== */
 
-  const [orders, setOrders] = useState(() => {
-    try {
-      const savedOrders = localStorage.getItem("smartshelf_orders");
+  const [orders, setOrders] =
+    useState(() => {
 
-      if (savedOrders) {
-        const parsed = JSON.parse(savedOrders);
+      const saved =
+        readStorage(
+          "smartshelf_orders",
+          null
+        );
 
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
+
+      /*
+        If there are no saved orders,
+        automatically load demo orders.
+      */
+
+      if (
+        !Array.isArray(saved) ||
+        saved.length === 0
+      ) {
+
+        return makeDemoOrders();
+
       }
 
-      return demoOrders;
-    } catch {
-      return demoOrders;
-    }
-  });
+
+      return saved;
+
+    });
+
 
   /* ===================================================
      ACTIVITIES
      =================================================== */
 
-  const [activities, setActivities] = useState(() => {
-    try {
-      const savedActivities =
-        localStorage.getItem("smartshelf_activities");
+  const [activities, setActivities] =
+    useState(() => {
 
-      if (savedActivities) {
-        const parsed = JSON.parse(savedActivities);
+      const saved =
+        readStorage(
+          "smartshelf_activities",
+          null
+        );
 
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
+
+      if (
+        !Array.isArray(saved) ||
+        saved.length === 0
+      ) {
+
+        return demoActivities;
+
       }
 
-      return createDemoActivities();
-    } catch {
-      return createDemoActivities();
-    }
-  });
+
+      return saved;
+
+    });
+
 
   /* ===================================================
      SEARCH
      =================================================== */
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] =
+    useState("");
+
 
   /* ===================================================
      SIDEBAR
      =================================================== */
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] =
+    useState(true);
+
 
   /* ===================================================
      SAVE PRODUCTS
      =================================================== */
 
   useEffect(() => {
+
     localStorage.setItem(
       "smartshelf_products",
       JSON.stringify(products)
     );
+
   }, [products]);
+
 
   /* ===================================================
      SAVE ORDERS
      =================================================== */
 
   useEffect(() => {
+
     localStorage.setItem(
       "smartshelf_orders",
       JSON.stringify(orders)
     );
+
   }, [orders]);
+
 
   /* ===================================================
      SAVE ACTIVITIES
      =================================================== */
 
   useEffect(() => {
+
     localStorage.setItem(
       "smartshelf_activities",
       JSON.stringify(activities)
     );
+
   }, [activities]);
+
 
   /* ===================================================
      LOGIN
      =================================================== */
 
-  const handleLogin = (email) => {
-    const userData = {
-      name: "Manager",
-      role: "Inventory Manager",
-      email,
+  const handleLogin =
+    (email) => {
+
+      const userData = {
+
+        name:
+          "Manager",
+
+        role:
+          "Inventory Manager",
+
+        email:
+          email,
+
+      };
+
+
+      localStorage.setItem(
+        "smartshelf_user",
+        JSON.stringify(userData)
+      );
+
+
+      setUser(
+        userData
+      );
+
+
+      setIsLoggedIn(
+        true
+      );
+
+
+      /*
+        Always go to Dashboard
+        after successful login.
+      */
+
+      navigate(
+        "/",
+        {
+          replace: true,
+        }
+      );
+
     };
 
-    localStorage.setItem(
-      "smartshelf_user",
-      JSON.stringify(userData)
-    );
-
-    setUser(userData);
-    setIsLoggedIn(true);
-  };
 
   /* ===================================================
      LOGOUT
      =================================================== */
 
-  const handleLogout = () => {
-    localStorage.removeItem("smartshelf_user");
+  const handleLogout =
+    () => {
 
-    setUser(null);
-    setIsLoggedIn(false);
-  };
+      /*
+        Remove authentication.
+      */
+
+      localStorage.removeItem(
+        "smartshelf_user"
+      );
+
+
+      setUser(null);
+
+      setIsLoggedIn(false);
+
+      setSearchTerm("");
+
+
+      /*
+        IMPORTANT:
+        Change the browser URL too.
+
+        This fixes:
+        /orders → logout → still /orders
+      */
+
+      navigate(
+        "/",
+        {
+          replace: true,
+        }
+      );
+
+    };
+
 
   /* ===================================================
      ACTIVITY
      =================================================== */
 
-  const addActivity = (message, type = "info") => {
-    const newActivity = {
-      id: Date.now(),
+  const addActivity =
+    (
       message,
-      type,
-      time: new Date().toLocaleString("en-IN", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }),
+      type = "info"
+    ) => {
+
+      const activity = {
+
+        id:
+          Date.now(),
+
+        message:
+          message,
+
+        type:
+          type,
+
+        time:
+          new Date().toLocaleString(
+            "en-IN",
+            {
+              dateStyle:
+                "medium",
+
+              timeStyle:
+                "short",
+            }
+          ),
+
+      };
+
+
+      setActivities(
+        (previous) => [
+
+          activity,
+
+          ...previous,
+
+        ].slice(0, 30)
+      );
+
     };
 
-    setActivities((prev) => [
-      newActivity,
-      ...prev,
-    ].slice(0, 30));
-  };
 
   /* ===================================================
      ADD PRODUCT
      =================================================== */
 
-  const handleAddProduct = (newProduct) => {
-    const product = {
-      ...newProduct,
+  const handleAddProduct =
+    (newProduct) => {
 
-      id: Date.now(),
+      const product = {
 
-      price: Number(newProduct.price || 0),
+        ...newProduct,
 
-      costPrice: Number(
-        newProduct.costPrice || 0
-      ),
+        id:
+          Date.now(),
 
-      stock: Number(
-        newProduct.stock || 0
-      ),
+        price:
+          Number(
+            newProduct.price ||
+              0
+          ),
 
-      minStock: Number(
-        newProduct.minStock || 0
-      ),
+        costPrice:
+          Number(
+            newProduct.costPrice ||
+              0
+          ),
 
-      sold30: Number(
-        newProduct.sold30 || 0
-      ),
+        stock:
+          Number(
+            newProduct.stock ||
+              0
+          ),
 
-      condition:
-        newProduct.condition || "Good",
+        minStock:
+          Number(
+            newProduct.minStock ||
+              0
+          ),
 
-      image:
-        newProduct.image || "",
+        sold30:
+          0,
+
+        condition:
+          newProduct.condition ||
+          "Good",
+
+        image:
+          newProduct.image ||
+          "",
+
+      };
+
+
+      setProducts(
+        (previous) => [
+
+          product,
+
+          ...previous,
+
+        ]
+      );
+
+
+      addActivity(
+        `${product.name} was added to the inventory.`,
+        "success"
+      );
+
     };
 
-    setProducts((prev) => [
-      product,
-      ...prev,
-    ]);
-
-    addActivity(
-      `${product.name} was added to the inventory.`,
-      "success"
-    );
-  };
 
   /* ===================================================
-     CREATE ORDER / RECORD SALE
+     CREATE SALE / ORDER
      =================================================== */
 
-  const createOrder = (
-    productId,
-    quantity
-  ) => {
-    const id = Number(productId);
+  const createOrder =
+    (
+      productId,
+      quantity
+    ) => {
 
-    const product = products.find(
-      (item) => Number(item.id) === id
-    );
+      const numericProductId =
+        Number(productId);
 
-    const qty = Number(quantity);
+      const numericQuantity =
+        Number(quantity);
 
-    if (!product) {
-      return {
-        success: false,
-        message: "Product not found.",
-      };
-    }
 
-    if (!Number.isFinite(qty) || qty <= 0) {
-      return {
-        success: false,
-        message: "Please enter a valid quantity.",
-      };
-    }
+      /* Validate quantity */
 
-    if (qty > Number(product.stock)) {
-      return {
-        success: false,
-        message:
-          `Only ${product.stock} units are available.`,
-      };
-    }
-
-    const total =
-      Number(product.price) * qty;
-
-    const cost =
-      Number(product.costPrice || 0) * qty;
-
-    const profit = total - cost;
-
-    const orderNumber =
-      1000 + orders.length + 1;
-
-    const newOrder = {
-      id: `ORD-${orderNumber}`,
-      productId: product.id,
-      productName: product.name,
-      quantity: qty,
-      price: Number(product.price),
-      total,
-      cost,
-      profit,
-      status: "Completed",
-      date: new Date().toLocaleDateString(
-        "en-IN",
-        {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }
-      ),
-    };
-
-    /* Update inventory */
-    setProducts((prev) =>
-      prev.map((item) => {
-        if (Number(item.id) !== id) {
-          return item;
-        }
+      if (
+        !Number.isFinite(
+          numericQuantity
+        ) ||
+        numericQuantity < 1
+      ) {
 
         return {
-          ...item,
-          stock:
-            Number(item.stock) - qty,
 
-          sold30:
-            Number(item.sold30 || 0) + qty,
+          success:
+            false,
+
+          message:
+            "Quantity must be at least 1.",
+
         };
-      })
-    );
 
-    /* Add order */
-    setOrders((prev) => [
-      newOrder,
-      ...prev,
-    ]);
+      }
 
-    /* Activity */
-    addActivity(
-      `${newOrder.id}: ${qty} × ${product.name} sold for ₹${total.toLocaleString("en-IN")}.`,
-      "success"
-    );
 
-    /* Low stock warning */
-    const remainingStock =
-      Number(product.stock) - qty;
+      /* Find product */
 
-    if (
-      remainingStock <
-      Number(product.minStock)
-    ) {
-      addActivity(
-        `${product.name} is now below its minimum stock level.`,
-        "warning"
+      const selectedProduct =
+        products.find(
+          (product) =>
+            Number(product.id) ===
+            numericProductId
+        );
+
+
+      if (
+        !selectedProduct
+      ) {
+
+        return {
+
+          success:
+            false,
+
+          message:
+            "Product not found.",
+
+        };
+
+      }
+
+
+      /* Available stock */
+
+      const availableStock =
+        Number(
+          selectedProduct.stock ||
+            0
+        );
+
+
+      /* Prevent overselling */
+
+      if (
+        numericQuantity >
+        availableStock
+      ) {
+
+        return {
+
+          success:
+            false,
+
+          message:
+            `Only ${availableStock} units are available.`,
+
+        };
+
+      }
+
+
+      /* Calculate sale */
+
+      const total =
+        Number(
+          selectedProduct.price ||
+            0
+        ) *
+        numericQuantity;
+
+
+      const cost =
+        Number(
+          selectedProduct.costPrice ||
+            0
+        ) *
+        numericQuantity;
+
+
+      const profit =
+        total -
+        cost;
+
+
+      /* Generate next order number */
+
+      const highestOrderNumber =
+        orders.reduce(
+          (
+            highest,
+            order
+          ) => {
+
+            const match =
+              String(
+                order.id || ""
+              ).match(
+                /(\d+)$/
+              );
+
+
+            if (!match) {
+
+              return highest;
+
+            }
+
+
+            return Math.max(
+              highest,
+              Number(
+                match[1]
+              )
+            );
+
+          },
+
+          1000
+        );
+
+
+      const nextOrderNumber =
+        highestOrderNumber +
+        1;
+
+
+      /* Create order */
+
+      const order = {
+
+        id:
+          `ORD-${nextOrderNumber}`,
+
+        productId:
+          selectedProduct.id,
+
+        productName:
+          selectedProduct.name,
+
+        quantity:
+          numericQuantity,
+
+        total:
+          total,
+
+        cost:
+          cost,
+
+        profit:
+          profit,
+
+        date:
+          new Date().toLocaleDateString(
+            "en-IN",
+            {
+              day:
+                "2-digit",
+
+              month:
+                "short",
+
+              year:
+                "numeric",
+            }
+          ),
+
+      };
+
+
+      /* =============================================
+         UPDATE STOCK
+         ============================================= */
+
+      setProducts(
+        (previous) =>
+          previous.map(
+            (product) => {
+
+              if (
+                Number(
+                  product.id
+                ) !==
+                numericProductId
+              ) {
+
+                return product;
+
+              }
+
+
+              return {
+
+                ...product,
+
+                stock:
+                  Number(
+                    product.stock ||
+                      0
+                  ) -
+                  numericQuantity,
+
+                sold30:
+                  Number(
+                    product.sold30 ||
+                      0
+                  ) +
+                  numericQuantity,
+
+              };
+
+            }
+          )
       );
-    }
 
-    return {
-      success: true,
-      order: newOrder,
+
+      /* =============================================
+         ADD ORDER
+         ============================================= */
+
+      setOrders(
+        (previous) => [
+
+          order,
+
+          ...previous,
+
+        ]
+      );
+
+
+      /* =============================================
+         ADD ACTIVITY
+         ============================================= */
+
+      addActivity(
+
+        `${order.id}: ${numericQuantity} × ${selectedProduct.name} sold for ₹${total.toLocaleString("en-IN")}.`,
+
+        "success"
+
+      );
+
+
+      /* =============================================
+         LOW STOCK WARNING
+         ============================================= */
+
+      const remainingStock =
+        availableStock -
+        numericQuantity;
+
+
+      if (
+        remainingStock <
+        Number(
+          selectedProduct.minStock ||
+            0
+        )
+      ) {
+
+        addActivity(
+
+          `${selectedProduct.name} is now below its minimum stock level.`,
+
+          "warning"
+
+        );
+
+      }
+
+
+      return {
+
+        success:
+          true,
+
+        order:
+          order,
+
+      };
+
     };
-  };
+
 
   /* ===================================================
      RESTOCK
      =================================================== */
 
-  const handleRestock = (
-    productId,
-    quantity
-  ) => {
-    const qty = Number(quantity);
+  const handleRestock =
+    (
+      productId,
+      quantity
+    ) => {
 
-    if (!qty || qty <= 0) {
-      return;
-    }
+      const qty =
+        Number(quantity);
 
-    const product = products.find(
-      (item) =>
-        Number(item.id) ===
-        Number(productId)
-    );
 
-    if (!product) {
-      return;
-    }
+      if (
+        !Number.isFinite(qty) ||
+        qty <= 0
+      ) {
 
-    setProducts((prev) =>
-      prev.map((item) => {
-        if (
-          Number(item.id) !==
-          Number(productId)
-        ) {
-          return item;
-        }
+        return;
 
-        return {
-          ...item,
-          stock:
-            Number(item.stock) + qty,
-        };
-      })
-    );
+      }
 
-    addActivity(
-      `${product.name} was restocked with ${qty} units.`,
-      "success"
-    );
-  };
+
+      const product =
+        products.find(
+          (item) =>
+            Number(item.id) ===
+            Number(productId)
+        );
+
+
+      if (!product) {
+
+        return;
+
+      }
+
+
+      setProducts(
+        (previous) =>
+          previous.map(
+            (item) => {
+
+              if (
+                Number(item.id) !==
+                Number(productId)
+              ) {
+
+                return item;
+
+              }
+
+
+              return {
+
+                ...item,
+
+                stock:
+                  Number(
+                    item.stock ||
+                      0
+                  ) +
+                  qty,
+
+              };
+
+            }
+          )
+      );
+
+
+      addActivity(
+
+        `${product.name} was restocked with ${qty} units.`,
+
+        "success"
+
+      );
+
+    };
+
 
   /* ===================================================
      INVENTORY REPORT
      =================================================== */
 
-  const generateReport = () => {
-    const totalStock =
-      products.reduce(
-        (total, product) =>
-          total +
-          Number(product.stock || 0),
-        0
-      );
+  const generateReport =
+    () => {
 
-    const totalSold =
-      products.reduce(
-        (total, product) =>
-          total +
-          Number(product.sold30 || 0),
-        0
-      );
-
-    const inventoryValue =
-      products.reduce(
-        (total, product) =>
-          total +
-          Number(
-            product.costPrice || 0
-          ) *
+      const totalStock =
+        products.reduce(
+          (
+            total,
+            product
+          ) =>
+            total +
             Number(
-              product.stock || 0
+              product.stock ||
+                0
             ),
-        0
+
+          0
+        );
+
+
+      const totalSold =
+        products.reduce(
+          (
+            total,
+            product
+          ) =>
+            total +
+            Number(
+              product.sold30 ||
+                0
+            ),
+
+          0
+        );
+
+
+      const inventoryValue =
+        products.reduce(
+          (
+            total,
+            product
+          ) =>
+            total +
+
+            Number(
+              product.costPrice ||
+                0
+            ) *
+
+            Number(
+              product.stock ||
+                0
+            ),
+
+          0
+        );
+
+
+      const revenue =
+        orders.reduce(
+          (
+            total,
+            order
+          ) =>
+            total +
+            Number(
+              order.total ||
+                0
+            ),
+
+          0
+        );
+
+
+      const profit =
+        orders.reduce(
+          (
+            total,
+            order
+          ) =>
+            total +
+            Number(
+              order.profit ||
+                0
+            ),
+
+          0
+        );
+
+
+      const lowStock =
+        products.filter(
+          (product) =>
+            Number(
+              product.stock ||
+                0
+            ) <
+            Number(
+              product.minStock ||
+                0
+            )
+        );
+
+
+      const report = [
+
+        "SMARTSHELF INVENTORY REPORT",
+
+        "========================================",
+
+        `Generated: ${new Date().toLocaleString(
+          "en-IN"
+        )}`,
+
+        "",
+
+        `Total Products: ${products.length}`,
+
+        `Stock Units: ${totalStock}`,
+
+        `Units Sold (30 Days): ${totalSold}`,
+
+        `Inventory Value: ₹${inventoryValue.toLocaleString(
+          "en-IN"
+        )}`,
+
+        `Total Orders: ${orders.length}`,
+
+        `Sales Revenue: ₹${revenue.toLocaleString(
+          "en-IN"
+        )}`,
+
+        `Gross Profit: ₹${profit.toLocaleString(
+          "en-IN"
+        )}`,
+
+        `Restocking Required: ${lowStock.length}`,
+
+        "",
+
+        "LOW STOCK PRODUCTS",
+
+        "----------------------------------------",
+
+        ...lowStock.map(
+          (product) =>
+            `${product.name}: ${product.stock} units left / minimum ${product.minStock}`
+        ),
+
+      ].join("\n");
+
+
+      const blob =
+        new Blob(
+          [report],
+          {
+            type:
+              "text/plain;charset=utf-8",
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        url;
+
+
+      link.download =
+        "SmartShelf_Inventory_Report.txt";
+
+
+      document.body.appendChild(
+        link
       );
 
-    const totalRevenue =
-      orders.reduce(
-        (total, order) =>
-          total +
-          Number(order.total || 0),
-        0
+
+      link.click();
+
+
+      document.body.removeChild(
+        link
       );
 
-    const totalProfit =
-      orders.reduce(
-        (total, order) =>
-          total +
-          Number(order.profit || 0),
-        0
+
+      URL.revokeObjectURL(
+        url
       );
 
-    const lowStock =
-      products.filter(
-        (product) =>
-          Number(product.stock || 0) <
-          Number(product.minStock || 0)
+
+      addActivity(
+        "Inventory report was generated.",
+        "info"
       );
 
-    let report = "";
+    };
 
-    report +=
-      "====================================\n";
-    report +=
-      "        SMARTSHELF INVENTORY REPORT\n";
-    report +=
-      "====================================\n\n";
-
-    report +=
-      `Generated: ${new Date().toLocaleString("en-IN")}\n\n`;
-
-    report += "SUMMARY\n";
-    report +=
-      "------------------------------------\n";
-
-    report +=
-      `Total Products: ${products.length}\n`;
-
-    report +=
-      `Total Stock Units: ${totalStock}\n`;
-
-    report +=
-      `Units Sold (30 Days): ${totalSold}\n`;
-
-    report +=
-      `Inventory Value: ₹${inventoryValue.toLocaleString("en-IN")}\n`;
-
-    report +=
-      `Total Orders: ${orders.length}\n`;
-
-    report +=
-      `Sales Revenue: ₹${totalRevenue.toLocaleString("en-IN")}\n`;
-
-    report +=
-      `Gross Profit: ₹${totalProfit.toLocaleString("en-IN")}\n`;
-
-    report +=
-      `Products Needing Restock: ${lowStock.length}\n\n`;
-
-    report += "LOW STOCK PRODUCTS\n";
-    report +=
-      "------------------------------------\n";
-
-    lowStock.forEach((product) => {
-      report +=
-        `${product.name} - ${product.stock} units left (minimum ${product.minStock})\n`;
-    });
-
-    report += "\nORDER HISTORY\n";
-    report +=
-      "------------------------------------\n";
-
-    orders.forEach((order) => {
-      report +=
-        `${order.id} | ${order.productName} | ${order.quantity} units | ₹${Number(order.total).toLocaleString("en-IN")} | ${order.date}\n`;
-    });
-
-    const blob = new Blob(
-      [report],
-      {
-        type: "text/plain",
-      }
-    );
-
-    const url =
-      URL.createObjectURL(blob);
-
-    const link =
-      document.createElement("a");
-
-    link.href = url;
-
-    link.download =
-      "SmartShelf_Inventory_Report.txt";
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-
-    addActivity(
-      "Inventory report was generated.",
-      "info"
-    );
-  };
 
   /* ===================================================
-     LOGIN SCREEN
+     LOGGED-OUT ROUTING
      =================================================== */
 
   if (!isLoggedIn) {
+
     return (
-      <Login
-        onLogin={handleLogin}
-      />
+
+      <Routes>
+
+        <Route
+          path="/"
+          element={
+            <Login
+              onLogin={
+                handleLogin
+              }
+            />
+          }
+        />
+
+
+        {/*
+          Any route entered while logged out
+          goes back to the login page at "/".
+        */}
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
+
+      </Routes>
+
     );
+
   }
 
+
   /* ===================================================
-     MAIN APPLICATION
+     LOGGED-IN APPLICATION
      =================================================== */
 
   return (
-    <BrowserRouter>
-      <div className="app-layout">
 
-        <Sidebar
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          onGenerateReport={generateReport}
-          onLogout={handleLogout}
+    <div className="app-layout">
+
+
+      {/* =============================================
+          SIDEBAR
+          ============================================= */}
+
+      <Sidebar
+        sidebarOpen={
+          sidebarOpen
+        }
+
+        user={
+          user
+        }
+
+        onLogout={
+          handleLogout
+        }
+
+        onGenerateReport={
+          generateReport
+        }
+      />
+
+
+      {/* =============================================
+          MAIN AREA
+          ============================================= */}
+
+      <div
+        className={
+          sidebarOpen
+            ? "main-area sidebar-open"
+            : "main-area sidebar-closed"
+        }
+      >
+
+
+        {/* ===========================================
+            NAVBAR
+            =========================================== */}
+
+        <Navbar
+          sidebarOpen={
+            sidebarOpen
+          }
+
+          setSidebarOpen={
+            setSidebarOpen
+          }
+
+          user={
+            user
+          }
+
+          products={
+            products
+          }
+
+          searchTerm={
+            searchTerm
+          }
+
+          setSearchTerm={
+            setSearchTerm
+          }
         />
 
-        <div
-          className={
-            sidebarOpen
-              ? "main-area sidebar-open"
-              : "main-area sidebar-closed"
-          }
-        >
 
-          <Navbar
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            user={user}
-            products={products}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+        {/* ===========================================
+            PAGE CONTENT
+            =========================================== */}
 
-          <main className="page-content">
+        <main className="page-content">
 
-            <Routes>
+          <Routes>
 
-              {/* DASHBOARD */}
 
-              <Route
-                path="/"
-                element={
-                  <Dashboard
-                    products={products}
-                    orders={orders}
-                    activities={activities}
-                  />
-                }
-              />
+            {/* =======================================
+                DASHBOARD
+                ======================================= */}
 
-              {/* PRODUCTS */}
+            <Route
+              path="/"
+              element={
 
-              <Route
-                path="/products"
-                element={
-                  <Products
-                    products={products}
-                    searchTerm={searchTerm}
-                  />
-                }
-              />
+                <Dashboard
 
-              {/* ADD PRODUCT */}
+                  products={
+                    products
+                  }
 
-              <Route
-                path="/add-product"
-                element={
-                  <AddProduct
-                    onAddProduct={
-                      handleAddProduct
-                    }
-                  />
-                }
-              />
+                  orders={
+                    orders
+                  }
 
-              {/* LOW STOCK */}
+                  activities={
+                    activities
+                  }
 
-              <Route
-                path="/low-stock"
-                element={
-                  <LowStock
-                    products={products}
-                    onRestock={handleRestock}
-                  />
-                }
-              />
+                />
 
-              {/* ORDERS */}
+              }
+            />
 
-              <Route
-                path="/orders"
-                element={
-                  <Orders
-                    products={products}
-                    orders={orders}
-                    createOrder={createOrder}
-                  />
-                }
-              />
 
-              {/* ANALYTICS */}
+            {/* =======================================
+                PRODUCTS
+                ======================================= */}
 
-              <Route
-                path="/analytics"
-                element={
-                  <Analytics
-                    products={products}
-                    orders={orders}
-                  />
-                }
-              />
+            <Route
+              path="/products"
+              element={
 
-              {/* NOTIFICATIONS */}
+                <Products
 
-              <Route
-                path="/notifications"
-                element={
-                  <Notifications
-                    activities={activities}
-                    products={products}
-                  />
-                }
-              />
+                  products={
+                    products
+                  }
 
-              {/* FALLBACK */}
+                  searchTerm={
+                    searchTerm
+                  }
 
-              <Route
-                path="*"
-                element={
-                  <Navigate
-                    to="/"
-                    replace
-                  />
-                }
-              />
+                />
 
-            </Routes>
+              }
+            />
 
-          </main>
-        </div>
+
+            {/* =======================================
+                ADD PRODUCT
+                ======================================= */}
+
+            <Route
+              path="/add-product"
+              element={
+
+                <AddProduct
+
+                  onAddProduct={
+                    handleAddProduct
+                  }
+
+                />
+
+              }
+            />
+
+
+            {/* =======================================
+                LOW STOCK
+                ======================================= */}
+
+            <Route
+              path="/low-stock"
+              element={
+
+                <LowStock
+
+                  products={
+                    products
+                  }
+
+                  setProducts={
+                    setProducts
+                  }
+
+                  addActivity={
+                    addActivity
+                  }
+
+                />
+
+              }
+            />
+
+
+            {/* =======================================
+                ORDERS
+                ======================================= */}
+
+            <Route
+              path="/orders"
+              element={
+
+                <Orders
+
+                  products={
+                    products
+                  }
+
+                  orders={
+                    orders
+                  }
+
+                  createOrder={
+                    createOrder
+                  }
+
+                />
+
+              }
+            />
+
+
+            {/* =======================================
+                ANALYTICS
+                ======================================= */}
+
+            <Route
+              path="/analytics"
+              element={
+
+                <Analytics
+
+                  products={
+                    products
+                  }
+
+                  orders={
+                    orders
+                  }
+
+                />
+
+              }
+            />
+
+
+            {/* =======================================
+                NOTIFICATIONS
+                ======================================= */}
+
+            <Route
+              path="/notifications"
+              element={
+
+                <Notifications
+
+                  activities={
+                    activities
+                  }
+
+                  products={
+                    products
+                  }
+
+                />
+
+              }
+            />
+
+
+            {/* =======================================
+                UNKNOWN AUTHENTICATED ROUTE
+                ======================================= */}
+
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  to="/"
+                  replace
+                />
+              }
+            />
+
+          </Routes>
+
+        </main>
+
       </div>
-    </BrowserRouter>
+
+    </div>
+
   );
+
 }
+
+
+/* =====================================================
+   ROOT APP
+
+   BrowserRouter is ALWAYS mounted.
+
+   This is the important logout fix.
+   ===================================================== */
+
+function App() {
+
+  return (
+
+    <BrowserRouter>
+
+      <SmartShelfApp />
+
+    </BrowserRouter>
+
+  );
+
+}
+
 
 export default App;

@@ -610,7 +610,8 @@ a {
 }
 
 .health-card {
-  min-height: 100px;
+  min-height: 120px;
+  width:300px;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -622,8 +623,8 @@ a {
 }
 
 .health-ring {
-  width: 68px;
-  height: 68px;
+  width: 70x;
+  height: 70px;
   flex: 0 0 68px;
   border-radius: 50%;
   display: flex;
@@ -637,12 +638,12 @@ a {
 
 .health-ring strong {
   color: var(--orange);
-  font-size: 17px;
+  font-size: 30px;
   line-height: 1;
 }
 
 .health-ring span {
-  color: #9da4b2;
+  color: #797a7b;
   font-size: 7px;
   margin-top: 2px;
 }
@@ -654,8 +655,9 @@ a {
 }
 
 .health-card span {
-  color: var(--muted);
-  font-size: 9px;
+  color:  #2f3333;
+  font-size: 15px;
+  font-weight: 100px;
 }
 
 .health-card strong {
@@ -663,11 +665,6 @@ a {
   font-size: 12px;
 }
 
-.health-card small {
-  margin-top: 3px;
-  color: #a1a8b5;
-  font-size: 8px;
-}
 
 .kpi-grid {
   display: grid;
@@ -715,7 +712,7 @@ a {
 .stat-card > span,
 .analytics-card > span {
   display: block;
-  color: var(--muted);
+  color:  #2f3333;
   font-size: 10px;
 }
 
@@ -723,7 +720,7 @@ a {
 .analytics-card > strong {
   display: block;
   margin-top: 5px;
-  color: var(--text);
+  color:  #2f3333;
   font-size: 25px;
   letter-spacing: -0.7px;
 }
@@ -732,7 +729,7 @@ a {
 .analytics-card > small {
   display: block;
   margin-top: 5px;
-  color: #9da5b4;
+  color:  #2f3333;
   font-size: 8px;
 }
 
@@ -790,7 +787,7 @@ a {
 }
 
 .snapshot-main span {
-  color: var(--muted);
+  color:  #2f3333;
   font-size: 9px;
 }
 
@@ -806,55 +803,79 @@ a {
   font-size: 8px;
 }
 
-.bar-chart {
-  height: 180px;
-  padding: 18px 22px 15px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-around;
-  gap: 15px;
+.sales-overview-chart {
+  width: 100%;
+  height: 270px;
+  padding: 12px 20px 8px;
+  overflow: hidden;
 }
 
-.bar-column {
+.sales-overview-svg {
+  width: 100%;
   height: 100%;
-  flex: 1;
-  max-width: 85px;
+  display: block;
+}
+
+.sales-grid-line {
+  stroke: #edf0f4;
+  stroke-width: 1;
+}
+
+.sales-y-label {
+  fill: #9aa2b1;
+  font-size: 10px;
+}
+
+.sales-day-label {
+  fill: #7f8796;
+  font-size: 10px;
+}
+
+.sales-overview-area {
+  fill: url(#dashboardSalesGradient);
+}
+
+.sales-overview-line {
+  stroke: #ff7300;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sales-point-ring {
+  fill: #ffffff;
+  stroke: rgba(255, 115, 0, 0.2);
+  stroke-width: 5;
+}
+
+.sales-overview-point {
+  fill: #ff7300;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.sales-week-total {
+  display: flex;
+  justify-content: flex-end;
+  gap: 45px;
+  padding: 12px 24px 18px;
+  border-top: 1px solid #edf0f4;
+}
+
+.sales-week-total div {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
+  gap: 3px;
 }
 
-.bar-column strong {
-  font-size: 9px;
-  color: var(--text);
+.sales-week-total span {
+  color: #8c95a5;
+  font-size: 10px;
 }
 
-.bar-column span {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  text-align: center;
-  color: var(--muted);
-  font-size: 8px;
-}
-
-.bar-track {
-  width: 100%;
-  height: 100px;
-  display: flex;
-  align-items: flex-end;
-  background: #f3f5f9;
-  border-radius: 7px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  width: 100%;
-  background: var(--orange);
-  border-radius: 7px 7px 0 0;
+.sales-week-total strong {
+  color: #171b3d;
+  font-size: 16px;
 }
 
 .attention-summary {
@@ -876,13 +897,13 @@ a {
 }
 
 .attention-summary strong {
-  color: var(--orange);
+  color:  #2f3333;
   font-size: 21px;
 }
 
 .attention-summary span {
   margin-top: 4px;
-  color: var(--muted);
+  color:  #2f3333;
   font-size: 8px;
 }
 
@@ -914,7 +935,7 @@ a {
 
 .decision-row span {
   margin-top: 3px;
-  color: var(--muted);
+  color:  #2f3333;
   font-size: 8px;
 }
 
@@ -929,7 +950,7 @@ a {
 }
 
 .decision-action small {
-  color: var(--muted);
+  color:  #2f3333;
   font-size: 7px;
 }
 
@@ -961,13 +982,13 @@ a {
 }
 
 .dashboard-list-row strong {
-  font-size: 9px;
+  font-size: 15px;
 }
 
 .dashboard-list-row span {
   margin-top: 3px;
-  color: var(--muted);
-  font-size: 7px;
+  color:  #2f3333;
+  font-size: 12px;
 }
 
 .rank {
@@ -979,7 +1000,7 @@ a {
   border-radius: 7px;
   background: var(--orange-soft);
   color: var(--orange);
-  font-size: 9px;
+  font-size: 15px;
   font-weight: 800;
 }
 
@@ -989,7 +1010,7 @@ a {
   flex: 0 0 28px;
   display: grid;
   place-items: center;
-  border-radius: 7px;
+  border-radius: 20px;
   background: #f2f4f8;
   color: #68728a;
 }
@@ -1026,11 +1047,11 @@ a {
 
 .category-top strong,
 .category-top span {
-  font-size: 9px;
+  font-size: 15px;
 }
 
 .category-top span {
-  color: var(--muted);
+  color:  #2f3333;
 }
 
 .category-bar {
@@ -1050,7 +1071,7 @@ a {
 .category-item small {
   display: block;
   margin-top: 5px;
-  color: var(--muted);
+  color:  #2f3333;
   font-size: 7px;
 }
 
@@ -1082,27 +1103,30 @@ a {
 }
 
 .recent-order-row strong {
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .recent-order-row span {
   margin-top: 3px;
-  color: var(--muted);
-  font-size: 8px;
+  color:  #2f3333;
+  font-size: 12px;
 }
 
 .recent-order-row > div:nth-child(2) {
   text-align: right;
+  font-size: 12px;
+  color: #2f3333;
 }
 
 .profit-text {
   color: var(--green) !important;
+  
 }
 
 .recent-order-row time {
-  color: var(--muted);
+  color:  #2f3333;
   text-align: right;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .activity-panel {
@@ -1126,7 +1150,7 @@ a {
 }
 
 .activity-dot {
-  width: 8px;
+  width: 10px;
   height: 8px;
   margin-top: 3px;
   flex: 0 0 8px;
@@ -1152,13 +1176,13 @@ a {
 }
 
 .activity-row strong {
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .activity-row span {
   margin-top: 3px;
-  color: var(--muted);
-  font-size: 8px;
+  color:  #2f3333;
+  font-size: 12px;
 }
 
 /* =========================================================
@@ -1171,11 +1195,12 @@ a {
   margin: 0 auto;
 }
 
-.products-summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 20px;
+.products-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-size: 20px;
 }
 
 .product-summary-card {
@@ -1218,15 +1243,16 @@ a {
   position: relative;
   overflow: hidden;
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 13px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding:10px;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(20, 26, 58, 0.09);
+  box-shadow: 0 13px 30px rgba(20, 26, 58, 0.09);
 }
 
 .product-card-top {
@@ -1273,29 +1299,31 @@ a {
 }
 
 .product-card-body {
-  padding: 15px 16px;
+  padding: 10px 10px;
 }
 
 .product-card-body h3 {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .product-category {
   margin-top: 4px;
-  color: var(--muted);
-  font-size: 8px;
+  color: rgb(55, 53, 53);
+  font-size: 13px;
+  padding:3px;
+  margin-right: 3px;;
 }
 
 .product-price {
   margin-top: 12px;
   display: flex;
   align-items: baseline;
-  gap: 5px;
+  gap: 0px;
 }
 
 .product-price strong {
-  font-size: 19px;
+  font-size: 20px;
 }
 
 .product-price span {
@@ -1307,7 +1335,7 @@ a {
   margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 10px;
 }
 
 .product-detail {
@@ -1323,7 +1351,7 @@ a {
 
 .product-detail span {
   color: var(--muted);
-  font-size: 7px;
+  font-size: 8px;
 }
 
 .product-detail strong {
@@ -1341,7 +1369,7 @@ a {
 
 .product-card-footer span {
   color: var(--muted);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 /* =========================================================
@@ -2281,4 +2309,94 @@ a {
     padding: 14px;
   }
 
+}
+/* =========================================================
+   DASHBOARD SALES OVERVIEW - LINE / AREA GRAPH
+   Use with the updated Dashboard.jsx sales overview SVG.
+   ========================================================= */
+
+.sales-line-chart {
+  width: 100%;
+  height: 260px;
+  position: relative;
+}
+
+.sales-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.sales-axis-label {
+  fill: #9aa2b1;
+  font-size: 9px;
+}
+
+.sales-date-label {
+  fill: #7f8796;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.sales-area {
+  fill: rgba(255, 115, 0, 0.12);
+  stroke: none;
+}
+
+.sales-line {
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sales-point-outer {
+  fill: #ffffff;
+  stroke: rgba(255, 116, 0, 0.28);
+  stroke-width: 5;
+  cursor: pointer;
+  transition: r 0.2s ease, stroke-width 0.2s ease;
+}
+
+.sales-point-outer:hover {
+  r: 7;
+  stroke-width: 6;
+}
+
+.sales-point-inner {
+  fill: var(--orange);
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.sales-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sales-chart-header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sales-chart-header strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.sales-chart-header span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.sales-chart-total {
+  color: var(--orange);
+  font-size: 14px;
+  font-weight: 800;
 }
