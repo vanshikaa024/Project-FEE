@@ -73,10 +73,6 @@ function Sidebar({
         )}
       </div>
 
-      <div className="sidebar-section-title">
-        MAIN MENU
-      </div>
-
       <nav className="sidebar-nav">
         {menu.map((item) => {
           const Icon = item.icon;

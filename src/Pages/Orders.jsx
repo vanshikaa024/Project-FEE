@@ -130,9 +130,9 @@ function Orders({
 
         <div className="stat-card">
 
-          <div className="stat-icon">
+          {/* <div className="stat-icon">
             <ClipboardList size={22} />
-          </div>
+          </div> */}
 
           <div>
 
@@ -182,7 +182,7 @@ function Orders({
 
           <div>
 
-            <span>Total Revenue   </span>
+            <span>Total Revenue</span>
 
             <strong>
               ₹{totalRevenue.toLocaleString("en-IN")}
@@ -197,7 +197,6 @@ function Orders({
         </div>
 
       </div>
-
 
       {/* CREATE ORDER */}
 

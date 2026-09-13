@@ -461,9 +461,6 @@ function Dashboard({
 
             </div>
 
-            <div className="ss-header-control">
-              Month <span>⌄</span>
-            </div>
           </div>
 
           <div className="ss-inventory-body">
@@ -641,9 +638,6 @@ function Dashboard({
 
             </div>
 
-            <div className="ss-header-control">
-              Focus <span>⌄</span>
-            </div>
 
           </div>
 
