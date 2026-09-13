@@ -3550,3 +3550,218 @@ a {
     display: none;
   }
 }
+
+/* =========================================================
+   INVENTORY AT A GLANCE - STOCK BARS
+   ========================================================= */
+
+.ss-stock-bars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(70px, 1fr));
+  align-items: end;
+  gap: 32px;
+  width: 100%;
+  min-height: 255px;
+  padding: 35px 25px 0;
+}
+
+.ss-stock-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.ss-stock-track {
+  position: relative;
+  width: 68px;
+  height: 165px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  /* IMPORTANT:
+     must be visible so the percentage can appear
+     above short bars */
+  overflow: visible;
+
+  border-radius: 10px;
+}
+
+/* Light grey background of every bar */
+.ss-stock-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #eef2f6;
+  border-radius: 10px;
+}
+
+/* Colored portion */
+.ss-stock-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+
+  min-height: 0;
+
+  border-radius: 10px;
+
+  z-index: 2;
+
+  transition:
+    height 0.35s ease,
+    transform 0.2s ease;
+}
+
+/* Blue - Inventory */
+.ss-stock-fill.total {
+  background: #168bea;
+}
+
+/* Green - In Stock */
+.ss-stock-fill.in {
+  background: #22a84c;
+}
+
+/* Yellow - Low Stock */
+.ss-stock-fill.low {
+  background: #f4b400;
+}
+
+/* Red - Out Of Stock */
+.ss-stock-fill.out {
+  background: #ed6468;
+}
+
+
+/* =========================================================
+   PERCENTAGE BADGE
+   ========================================================= */
+
+.ss-stock-badge {
+  position: absolute;
+
+  left: 50%;
+
+  /* Keep badge centered */
+  transform: translateX(-50%);
+
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 52px;
+  height: 23px;
+
+  padding: 0 7px;
+
+  background: #ffffff;
+
+  border-radius: 8px;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 2px 7px rgba(20, 26, 58, 0.10);
+
+  border: 1px solid rgba(220, 225, 232, 0.8);
+}
+
+
+/* Badge text colors */
+
+.ss-stock-badge.total {
+  color: #168bea;
+}
+
+.ss-stock-badge.in {
+  color: #22a84c;
+}
+
+.ss-stock-badge.low {
+  color: #d39700;
+}
+
+.ss-stock-badge.out {
+  color: #e35b60;
+}
+
+
+/* =========================================================
+   LABELS BELOW THE BARS
+   ========================================================= */
+
+.ss-stock-bar-item > strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #202a35;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+.ss-stock-bar-item > span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #9aa3ad;
+
+  font-size: 8px;
+
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .ss-stock-bars {
+    gap: 18px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .ss-stock-track {
+    width: 60px;
+    height: 150px;
+  }
+
+}
+
+@media (max-width: 650px) {
+
+  .ss-stock-bars {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 35px;
+    min-height: auto;
+  }
+
+  .ss-stock-track {
+    width: 65px;
+    height: 145px;
+  }
+
+}

@@ -198,7 +198,7 @@ function Navbar({
           </div>
 
           <span>
-            {user?.name || "Manager"}
+            {"Manager"}
           </span>
         </div>
       </div>
