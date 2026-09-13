@@ -66,7 +66,6 @@ const productImages = {
     "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=900&q=85",
 };
 
-
 /* =====================================================
    DEFAULT PRODUCTS
    ===================================================== */
@@ -420,7 +419,6 @@ function SmartShelfApp() {
         null
       )
     );
-
 
   /* ===================================================
      PRODUCTS

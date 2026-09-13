@@ -9,726 +9,655 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
-function Analytics({
-  products = [],
-  orders = [],
-}) {
+function Analytics({ products = [], orders = [] }) {
+  const safeProducts = Array.isArray(products) ? products : [];
+  const safeOrders = Array.isArray(orders) ? orders : [];
 
-  const safeProducts = Array.isArray(products)
-    ? products
-    : [];
+  const totalProducts = safeProducts.length;
 
-  const safeOrders = Array.isArray(orders)
-    ? orders
-    : [];
+  const totalStock = safeProducts.reduce(
+    (total, product) => total + Number(product.stock || 0),
+    0
+  );
 
+  const totalSalesUnits = safeProducts.reduce(
+    (total, product) => total + Number(product.sold30 || 0),
+    0
+  );
 
+  const totalInventoryValue = safeProducts.reduce(
+    (total, product) =>
+      total +
+      Number(product.costPrice || 0) * Number(product.stock || 0),
+    0
+  );
 
-  const totalProducts =
-    safeProducts.length;
+  const totalRevenue = safeOrders.reduce(
+    (total, order) => total + Number(order.total || 0),
+    0
+  );
 
+  const totalProfit = safeOrders.reduce(
+    (total, order) => total + Number(order.profit || 0),
+    0
+  );
 
-  const totalStock =
-    safeProducts.reduce(
-      (total, product) =>
-        total + Number(product.stock || 0),
-      0
-    );
+  const lowStockProducts = safeProducts.filter(
+    (product) =>
+      Number(product.stock || 0) < Number(product.minStock || 0)
+  );
 
+  const outOfStockProducts = safeProducts.filter(
+    (product) => Number(product.stock || 0) === 0
+  );
 
-  const totalSalesUnits =
-    safeProducts.reduce(
-      (total, product) =>
-        total + Number(product.sold30 || 0),
-      0
-    );
+  const averageOrderValue = safeOrders.length
+    ? totalRevenue / safeOrders.length
+    : 0;
 
+  const money = (value) =>
+    `₹${Number(value || 0).toLocaleString("en-IN", {
+      maximumFractionDigits: 2,
+    })}`;
 
-  const totalInventoryValue =
-    safeProducts.reduce(
-      (total, product) =>
-        total +
-        Number(product.costPrice || 0) *
-        Number(product.stock || 0),
-      0
-    );
+  const fastMoving = useMemo(
+    () =>
+      [...safeProducts]
+        .sort(
+          (a, b) =>
+            Number(b.sold30 || 0) - Number(a.sold30 || 0)
+        )
+        .slice(0, 5),
+    [safeProducts]
+  );
 
-
-  const totalRevenue =
-    safeOrders.reduce(
-      (total, order) =>
-        total + Number(order.total || 0),
-      0
-    );
-
-
-  const lowStockProducts =
-    safeProducts.filter(
-      (product) =>
-        Number(product.stock || 0) <
-        Number(product.minStock || 0)
-    );
-
-
-
-
-  const fastMoving = useMemo(() => {
-
-    return [...safeProducts]
-      .sort(
-        (a, b) =>
-          Number(b.sold30 || 0) -
-          Number(a.sold30 || 0)
-      )
-      .slice(0, 5);
-
-  }, [safeProducts]);
-
-
-
-  const slowMoving = useMemo(() => {
-
-    return [...safeProducts]
-      .sort(
-        (a, b) =>
-          Number(a.sold30 || 0) -
-          Number(b.sold30 || 0)
-      )
-      .slice(0, 5);
-
-  }, [safeProducts]);
-
+  const slowMoving = useMemo(
+    () =>
+      [...safeProducts]
+        .sort(
+          (a, b) =>
+            Number(a.sold30 || 0) - Number(b.sold30 || 0)
+        )
+        .slice(0, 5),
+    [safeProducts]
+  );
 
   const categorySales = useMemo(() => {
-
     const data = {};
 
-    safeProducts.forEach(
-      (product) => {
+    safeProducts.forEach((product) => {
+      const category = product.category || "Other";
 
-        if (!data[product.category]) {
-          data[product.category] = 0;
-        }
-
-        data[product.category] +=
-          Number(product.sold30 || 0);
+      if (!data[category]) {
+        data[category] = 0;
       }
-    );
 
+      data[category] += Number(product.sold30 || 0);
+    });
 
-    return Object.entries(data)
-      .sort(
-        (a, b) => b[1] - a[1]
-      );
-
+    return Object.entries(data).sort((a, b) => b[1] - a[1]);
   }, [safeProducts]);
 
+  const maxCategorySales = Math.max(
+    ...categorySales.map(([, value]) => value),
+    1
+  );
 
-  const formatMoney = (value) =>
-    `₹${Number(value).toLocaleString("en-IN")}`;
+  /*
+   * ==========================================================
+   * INVENTORY AT A GLANCE
+   * This is intentionally the SAME TYPE of graph used on the
+   * Dashboard: four vertical bars for stock status.
+   * ==========================================================
+   */
 
+  const inventoryBars = [
+    {
+      label: "Total Products",
+      shortLabel: "Inventory",
+      value: totalProducts,
+      colorClass: "business-bar-blue",
+      badge: "100%",
+      subLabel: "All products",
+    },
+    {
+      label: "In Stock",
+      shortLabel: "In Stock",
+      value: safeProducts.filter(
+        (product) =>
+          Number(product.stock || 0) > Number(product.minStock || 0)
+      ).length,
+      colorClass: "business-bar-green",
+      subLabel: "Available",
+    },
+    {
+      label: "Low Stock",
+      shortLabel: "Low Stock",
+      value: lowStockProducts.filter(
+        (product) => Number(product.stock || 0) > 0
+      ).length,
+      colorClass: "business-bar-yellow",
+      subLabel: "Needs restock",
+    },
+    {
+      label: "Out Of Stock",
+      shortLabel: "Out Of Stock",
+      value: outOfStockProducts.length,
+      colorClass: "business-bar-red",
+      subLabel: "Unavailable",
+    },
+  ];
 
-  const graphData = useMemo(() => {
+  const totalForPercent = Math.max(totalProducts, 1);
 
-    if (safeOrders.length === 0) {
+  const inventoryBarsWithPercent = inventoryBars.map((bar) => ({
+    ...bar,
+    percent:
+      bar.label === "Total Products"
+        ? 100
+        : Math.round((bar.value / totalForPercent) * 100),
+  }));
 
-      return [
-        {
-          label: "Current",
-          value: totalSalesUnits,
-        },
-      ];
+  const maxBarPercent = 100;
 
-    }
-
-
-    const recentOrders =
-      safeOrders
-        .slice(0, 6)
-        .reverse();
-
-
-    return recentOrders.map(
-      (order, index) => ({
-
-        label:
-          `Sale ${index + 1}`,
-
-        value:
-          Number(order.quantity || 0),
-
-      })
-    );
-
-  }, [safeOrders, totalSalesUnits]);
-
-
-  const maxGraphValue =
-    Math.max(
-      ...graphData.map(
-        (item) => item.value
-      ),
-      1
-    );
-
+  const health =
+    totalProducts === 0
+      ? 0
+      : Math.round(
+          ((inventoryBarsWithPercent[1].value +
+            Math.max(inventoryBarsWithPercent[2].value, 0) * 0.5) /
+            totalProducts) *
+            100
+        );
 
   return (
-    <div className="analytics-page">
+    <div className="analytics-page business-performance-page">
 
+      {/* ======================================================
+          HEADER
+      ======================================================= */}
 
-      {/* HEADER */}
-
-      <div className="page-header">
-
+      <div className="page-header business-performance-header">
         <div>
+          <span className="business-eyebrow">BUSINESS INSIGHTS</span>
 
-          <h1>
-            Business Performance
-          </h1>
+          <h1>Business Performance</h1>
 
           <p>
-            Understand your sales performance,
-            inventory movement and restocking needs.
+            Understand your sales, inventory movement and
+            restocking needs.
           </p>
+        </div>
 
+        <div className="business-period">CURRENT VIEW</div>
+      </div>
+
+      {/* ======================================================
+          SUMMARY CARDS
+      ======================================================= */}
+
+      <div className="analytics-summary business-summary-grid">
+
+        <div className="analytics-card business-summary-card">
+          <div className="business-summary-icon">
+            <Package size={20} />
+          </div>
+
+          <div>
+            <span>Total Products</span>
+            <strong>{totalProducts.toLocaleString("en-IN")}</strong>
+            <small>Products currently managed</small>
+          </div>
+        </div>
+
+        <div className="analytics-card business-summary-card">
+          <div className="business-summary-icon">
+            <ShoppingCart size={20} />
+          </div>
+
+          <div>
+            <span>Units Sold</span>
+            <strong>{totalSalesUnits.toLocaleString("en-IN")}</strong>
+            <small>Sales volume in 30 days</small>
+          </div>
+        </div>
+
+        <div className="analytics-card business-summary-card">
+          <div className="business-summary-icon">
+            <IndianRupee size={20} />
+          </div>
+
+          <div>
+            <span>Inventory Value</span>
+            <strong>{money(totalInventoryValue)}</strong>
+            <small>Current stock at cost</small>
+          </div>
+        </div>
+
+        <div className="analytics-card business-summary-card">
+          <div className="business-summary-icon warning">
+            <AlertTriangle size={20} />
+          </div>
+
+          <div>
+            <span>Products Needing Attention</span>
+            <strong>{lowStockProducts.length}</strong>
+            <small>{outOfStockProducts.length} out of stock</small>
+          </div>
         </div>
 
       </div>
 
+      {/* ======================================================
+          INVENTORY AT A GLANCE
+          SAME GRAPH STYLE AS DASHBOARD
+      ======================================================= */}
 
-      {/* SUMMARY */}
+      <section className="analytics-panel inventory-glance-business">
 
-      <div className="analytics-summary">
+        <div className="business-panel-heading">
 
-        <div className="analytics-card">
+          <div className="business-title-with-icon">
+            <div className="business-heading-icon">
+              <Package size={19} />
+            </div>
 
-          <div className="analytics-card-icon">
-            <Package size={22} />
+            <div>
+              <h2>Inventory at a Glance</h2>
+              <p>Current stock status across all products.</p>
+            </div>
           </div>
 
-          <div>
+          <div className="business-month-button">
+            Month <span>⌄</span>
+          </div>
 
-            <span>
+        </div>
+
+        <div className="inventory-glance-content">
+
+          {/* LEFT LEGEND / TOTAL */}
+
+          <div className="inventory-glance-summary">
+
+            <strong>
+              {totalProducts.toLocaleString("en-IN")}
+            </strong>
+
+            <span className="inventory-total-label">
               Total Products
             </span>
 
-            <strong>
-              {totalProducts}
-            </strong>
+            <div className="inventory-legend">
 
-            <small>
-              Products currently managed
-            </small>
+              <div>
+                <i className="legend-blue" />
+                <span>Total Products</span>
+                <strong>{totalProducts}</strong>
+              </div>
 
-          </div>
+              <div>
+                <i className="legend-green" />
+                <span>In Stock</span>
+                <strong>{inventoryBarsWithPercent[1].value}</strong>
+              </div>
 
-        </div>
+              <div>
+                <i className="legend-yellow" />
+                <span>Low Stock</span>
+                <strong>{inventoryBarsWithPercent[2].value}</strong>
+              </div>
 
+              <div>
+                <i className="legend-red" />
+                <span>Out Of Stock</span>
+                <strong>{outOfStockProducts.length}</strong>
+              </div>
 
-        <div className="analytics-card">
-
-          <div className="analytics-card-icon">
-            <ShoppingCart size={22} />
-          </div>
-
-          <div>
-
-            <span>
-              Units Sold
-            </span>
-
-            <strong>
-              {totalSalesUnits}
-            </strong>
-
-            <small>
-              Units sold in last 30 days
-            </small>
+            </div>
 
           </div>
 
-        </div>
+          {/* BARS */}
 
+          <div className="inventory-bars-area">
 
-        <div className="analytics-card">
+            {inventoryBarsWithPercent.map((bar) => {
 
-          <div className="analytics-card-icon">
-            <IndianRupee size={22} />
-          </div>
-
-          <div>
-
-            <span>
-              Inventory Value
-            </span>
-
-            <strong>
-              {formatMoney(
-                totalInventoryValue
-              )}
-            </strong>
-
-            <small>
-              Based on current stock cost
-            </small>
-
-          </div>
-
-        </div>
-
-
-        <div className="analytics-card">
-
-          <div className="analytics-card-icon">
-            <AlertTriangle size={22} />
-          </div>
-
-          <div>
-
-            <span>
-              Products Needing Attention
-            </span>
-
-            <strong>
-              {lowStockProducts.length}
-            </strong>
-
-            <small>
-              Below minimum stock level
-            </small>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      {/* REVENUE */}
-
-      <div className="analytics-panel">
-
-        <div className="panel-heading">
-
-          <div>
-
-            <h2>
-              Overall Sales Activity
-            </h2>
-
-            <p>
-              Units sold through your recorded orders.
-            </p>
-
-          </div>
-
-          <div className="sales-total">
-
-            <IndianRupee size={18} />
-
-            {formatMoney(totalRevenue)}
-
-          </div>
-
-        </div>
-
-
-        <div className="sales-chart">
-
-          <div className="chart-y-axis">
-
-            <span>
-              {maxGraphValue}
-            </span>
-
-            <span>
-              {Math.round(
-                maxGraphValue / 2
-              )}
-            </span>
-
-            <span>
-              0
-            </span>
-
-          </div>
-
-
-          <div className="chart-area">
-
-            <div className="chart-grid-line" />
-            <div className="chart-grid-line" />
-            <div className="chart-grid-line" />
-
-
-            <div className="chart-bars">
-
-              {graphData.map(
-                (item, index) => {
-
-                  const height =
-                    Math.max(
-                      (item.value /
-                        maxGraphValue) *
-                        100,
-                      5
+              const height =
+                bar.percent === 0
+                  ? 0
+                  : Math.max(
+                      (bar.percent / maxBarPercent) * 100,
+                      12
                     );
 
+              return (
+                <div className="business-stock-column" key={bar.label}>
 
-                  return (
+                  <div className="business-stock-bar-wrap">
 
-                    <div
-                      className="chart-column"
-                      key={index}
-                    >
-
+                    {bar.percent > 0 && (
                       <div
-                        className="chart-value"
+                        className={`business-stock-bar ${bar.colorClass}`}
+                        style={{ height: `${height}%` }}
                       >
-                        {item.value}
+                        <span className="business-stock-badge">
+                          ↗ {bar.percent}%
+                        </span>
                       </div>
+                    )}
 
+                    {bar.percent === 0 && (
                       <div
-                        className="chart-bar"
-                        style={{
-                          height:
-                            `${height}%`,
-                        }}
+                        className={`business-stock-bar business-empty-bar ${bar.colorClass}`}
                       />
+                    )}
 
-                      <span>
-                        {item.label}
-                      </span>
+                  </div>
 
-                    </div>
+                  <strong>{bar.shortLabel}</strong>
 
-                  );
+                  <span>{bar.subLabel}</span>
 
-                }
-              )}
-
-            </div>
+                </div>
+              );
+            })}
 
           </div>
 
         </div>
 
-      </div>
+      </section>
 
+      {/* ======================================================
+          BUSINESS PERFORMANCE NUMBERS
+      ======================================================= */}
 
-      {/* FAST / SLOW */}
+      <section className="business-performance-mini-grid">
 
-      <div className="analytics-grid">
+        <div className="business-mini-card">
+          <span>Recorded Revenue</span>
+          <strong>{money(totalRevenue)}</strong>
+          <small>{safeOrders.length} completed orders</small>
+        </div>
 
+        <div className="business-mini-card">
+          <span>Gross Profit</span>
+          <strong>{money(totalProfit)}</strong>
+          <small>
+            {totalRevenue
+              ? `${((totalProfit / totalRevenue) * 100).toFixed(1)}% margin`
+              : "No recorded revenue"}
+          </small>
+        </div>
 
-        <div className="analytics-panel">
+        <div className="business-mini-card">
+          <span>Average Order Value</span>
+          <strong>{money(averageOrderValue)}</strong>
+          <small>Across recorded orders</small>
+        </div>
+
+        <div className="business-mini-card">
+          <span>Inventory Health</span>
+          <strong>{health}/100</strong>
+          <small>
+            {health >= 80
+              ? "Healthy"
+              : health >= 60
+              ? "Watch"
+              : "Needs attention"}
+          </small>
+        </div>
+
+      </section>
+
+      {/* ======================================================
+          TOP SELLING / LOW SALES
+      ======================================================= */}
+
+      <div className="analytics-grid business-products-grid">
+
+        {/* TOP SELLERS */}
+
+        <section className="analytics-panel">
 
           <div className="panel-heading">
-
             <div>
-
-              <h2>
-                Top Selling Products
-              </h2>
-
-              <p>
-                Products with the highest sales.
-              </p>
-
+              <h2>Top Selling Products</h2>
+              <p>Products with the highest unit movement.</p>
             </div>
 
-            <TrendingUp size={24} />
-
+            <TrendingUp size={20} />
           </div>
 
+          <div className="business-product-list">
 
-          <div className="movement-list">
+            {fastMoving.length ? (
+              fastMoving.map((product, index) => (
+                <div className="business-product-row" key={product.id}>
 
-            {fastMoving.map(
-              (product, index) => (
-
-                <div
-                  className="movement-row"
-                  key={product.id}
-                >
-
-                  <div className="rank">
+                  <div className="business-rank">
                     {index + 1}
                   </div>
 
-                  <div className="movement-info">
-
-                    <strong>
-                      {product.name}
-                    </strong>
-
-                    <span>
-                      {product.category}
-                    </span>
-
+                  <div className="business-product-image">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                      />
+                    ) : (
+                      <Package size={18} />
+                    )}
                   </div>
 
-                  <div className="movement-sales">
+                  <div className="business-product-name">
+                    <strong>{product.name}</strong>
+                    <span>{product.category || "Other"}</span>
+                  </div>
 
-                    <strong>
-                      {product.sold30 || 0}
-                    </strong>
-
-                    <span>
-                      units sold
-                    </span>
-
+                  <div className="business-product-sales">
+                    <strong>{Number(product.sold30 || 0)}</strong>
+                    <span>units</span>
                   </div>
 
                 </div>
-
-              )
+              ))
+            ) : (
+              <div className="business-empty">
+                <Package size={25} />
+                <strong>No products yet</strong>
+              </div>
             )}
 
           </div>
 
-        </div>
+        </section>
 
+        {/* LOW SALES */}
 
-        <div className="analytics-panel">
+        <section className="analytics-panel">
 
           <div className="panel-heading">
-
             <div>
-
-              <h2>
-                Products With Low Sales
-              </h2>
-
-              <p>
-                Products that may need promotion.
-              </p>
-
+              <h2>Products With Low Sales</h2>
+              <p>Products that may need promotion.</p>
             </div>
 
-            <TrendingDown size={24} />
-
+            <TrendingDown size={20} />
           </div>
 
+          <div className="business-product-list">
 
-          <div className="movement-list">
+            {slowMoving.length ? (
+              slowMoving.map((product, index) => (
+                <div className="business-product-row" key={product.id}>
 
-            {slowMoving.map(
-              (product, index) => (
-
-                <div
-                  className="movement-row"
-                  key={product.id}
-                >
-
-                  <div className="rank">
+                  <div className="business-rank">
                     {index + 1}
                   </div>
 
-                  <div className="movement-info">
-
-                    <strong>
-                      {product.name}
-                    </strong>
-
-                    <span>
-                      {product.category}
-                    </span>
-
+                  <div className="business-product-image">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                      />
+                    ) : (
+                      <Package size={18} />
+                    )}
                   </div>
 
-                  <div className="movement-sales">
-
-                    <strong>
-                      {product.sold30 || 0}
-                    </strong>
-
+                  <div className="business-product-name">
+                    <strong>{product.name}</strong>
                     <span>
-                      units sold
+                      {Number(product.stock || 0)} units in stock
                     </span>
+                  </div>
 
+                  <div className="business-product-sales">
+                    <strong>{Number(product.sold30 || 0)}</strong>
+                    <span>units</span>
                   </div>
 
                 </div>
-
-              )
+              ))
+            ) : (
+              <div className="business-empty">
+                <Package size={25} />
+                <strong>No products yet</strong>
+              </div>
             )}
 
           </div>
 
-        </div>
+        </section>
 
       </div>
 
+      {/* ======================================================
+          CATEGORY PERFORMANCE
+      ======================================================= */}
 
-      {/* CATEGORY */}
-
-      <div className="analytics-panel">
+      <section className="analytics-panel">
 
         <div className="panel-heading">
-
           <div>
-
-            <h2>
-              Sales Performance by Category
-            </h2>
-
-            <p>
-              Which product categories are selling the most.
-            </p>
-
+            <h2>Sales Performance by Category</h2>
+            <p>Unit movement across your product categories.</p>
           </div>
 
-          <BarChart3 size={24} />
-
+          <BarChart3 size={20} />
         </div>
 
+        <div className="business-category-list">
 
-        <div className="category-list">
+          {categorySales.length ? (
+            categorySales.map(([category, sales]) => {
 
-          {categorySales.map(
-            ([category, sales]) => {
-
-              const maxSales =
-                categorySales[0]?.[1] || 1;
-
-              const percentage =
-                (sales / maxSales) * 100;
-
+              const width =
+                (sales / maxCategorySales) * 100;
 
               return (
+                <div className="business-category-row" key={category}>
 
-                <div
-                  className="category-item"
-                  key={category}
-                >
-
-                  <div className="category-top">
-
-                    <strong>
-                      {category}
-                    </strong>
-
-                    <span>
-                      {sales} units sold
-                    </span>
-
+                  <div className="business-category-name">
+                    <strong>{category}</strong>
                   </div>
 
-
-                  <div className="category-bar">
-
+                  <div className="business-category-track">
                     <div
-                      className="category-bar-fill"
-                      style={{
-                        width:
-                          `${percentage}%`,
-                      }}
+                      className="business-category-fill"
+                      style={{ width: `${width}%` }}
                     />
+                  </div>
 
+                  <div className="business-category-value">
+                    {sales} units sold
                   </div>
 
                 </div>
-
               );
-
-            }
+            })
+          ) : (
+            <div className="business-empty">
+              <BarChart3 size={25} />
+              <strong>No category data yet</strong>
+            </div>
           )}
 
         </div>
 
-      </div>
+      </section>
 
+      {/* ======================================================
+          REPLENISHMENT
+      ======================================================= */}
 
-      {/* LOW STOCK */}
-
-      <div className="analytics-panel">
+      <section className="analytics-panel">
 
         <div className="panel-heading">
 
           <div>
-
-            <h2>
-              Inventory Replenishment Needs
-            </h2>
-
-            <p>
-              Products below their minimum stock level.
-            </p>
-
+            <h2>Inventory Replenishment Needs</h2>
+            <p>Products below their minimum stock level.</p>
           </div>
 
-          <AlertTriangle size={24} />
+          <AlertTriangle size={20} />
 
         </div>
 
-
         {lowStockProducts.length === 0 ? (
 
-          <div className="empty-analysis">
-
-            <Package size={30} />
-
-            <strong>
-              Inventory levels are healthy
-            </strong>
-
-            <p>
-              No products currently require replenishment.
-            </p>
-
+          <div className="business-empty business-healthy">
+            <Package size={28} />
+            <strong>Inventory levels are healthy</strong>
+            <p>No products currently require replenishment.</p>
           </div>
 
         ) : (
 
-          <div className="attention-list">
+          <div className="business-replenishment-list">
 
-            {lowStockProducts.map(
-              (product) => (
+            {lowStockProducts.map((product) => (
 
-                <div
-                  className="attention-row"
-                  key={product.id}
-                >
+              <div className="business-replenishment-row" key={product.id}>
 
-                  <div>
+                <div className="business-replenishment-product">
 
-                    <strong>
-                      {product.name}
-                    </strong>
-
-                    <span>
-                      Minimum required:
-                      {" "}
-                      {product.minStock}
-                      {" "}units
-                    </span>
-
+                  <div className="business-product-image small">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                      />
+                    ) : (
+                      <Package size={16} />
+                    )}
                   </div>
 
-
-                  <div className="attention-stock">
-
-                    <strong>
-                      {product.stock}
-                    </strong>
-
+                  <div>
+                    <strong>{product.name}</strong>
                     <span>
-                      units left
+                      Minimum required: {product.minStock} units
                     </span>
-
                   </div>
 
                 </div>
 
-              )
-            )}
+                <div className="business-replenishment-stock">
+                  <strong>{Number(product.stock || 0)}</strong>
+                  <span>units left</span>
+                </div>
+
+              </div>
+            ))}
 
           </div>
-
         )}
 
-      </div>
+      </section>
 
     </div>
   );

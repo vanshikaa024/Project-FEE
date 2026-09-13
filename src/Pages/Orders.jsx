@@ -1,24 +1,32 @@
+import { useState } from "react";
 import {
-  AlertTriangle,
-  BarChart3,
-  Boxes,
-  CheckCircle2,
-  ClipboardList,
-  IndianRupee,
-  Package,
   ShoppingCart,
-  TrendingDown,
-  TrendingUp,
+  Package,
+  IndianRupee,
+  ClipboardList,
+  CheckCircle,
+  AlertTriangle,
 } from "lucide-react";
 
-const money = (value) =>
-  `₹${Number(value || 0).toLocaleString("en-IN")}`;
-
-function Dashboard({
+function Orders({
   products = [],
   orders = [],
-  activities = [],
+  createOrder,
 }) {
+
+  const [selectedProduct, setSelectedProduct] =
+    useState("");
+
+  const [quantity, setQuantity] =
+    useState(1);
+
+  const [message, setMessage] =
+    useState("");
+
+  const [messageType, setMessageType] =
+    useState("");
+
+
   const safeProducts = Array.isArray(products)
     ? products
     : [];
@@ -27,774 +35,402 @@ function Dashboard({
     ? orders
     : [];
 
-  const safeActivities = Array.isArray(activities)
-    ? activities
-    : [];
 
-  /* =========================
-     INVENTORY CALCULATIONS
-  ========================= */
-
-  const totalStock = safeProducts.reduce(
-    (sum, product) =>
-      sum + Number(product.stock || 0),
-    0
-  );
-
-  const inventoryValue = safeProducts.reduce(
-    (sum, product) =>
-      sum +
-      Number(product.costPrice || 0) *
-        Number(product.stock || 0),
-    0
-  );
-
-  /* =========================
-     SALES CALCULATIONS
-  ========================= */
-
-  const revenue = safeOrders.reduce(
-    (sum, order) =>
-      sum + Number(order.total || 0),
-    0
-  );
-
-  const cost = safeOrders.reduce(
-    (sum, order) =>
-      sum + Number(order.costTotal || 0),
-    0
-  );
-
-  const profit = revenue - cost;
-
-  const margin = revenue
-    ? (profit / revenue) * 100
-    : 0;
-
-  const totalUnitsSold = safeProducts.reduce(
-    (sum, product) =>
-      sum + Number(product.sold30 || 0),
-    0
-  );
-
-  /* =========================
-     STOCK STATUS
-  ========================= */
-
-  const lowStock = safeProducts.filter(
+  const selected = safeProducts.find(
     (product) =>
-      Number(product.stock || 0) <
-      Number(product.minStock || 0)
+      product.id === Number(selectedProduct)
   );
 
-  const outOfStock = safeProducts.filter(
-    (product) =>
-      Number(product.stock || 0) === 0
-  );
 
-  /* =========================
-     SLOW MOVING PRODUCTS
-  ========================= */
+  const handleSubmit = (e) => {
 
-  const slowMoving = [...safeProducts]
-    .sort(
-      (a, b) =>
-        Number(a.sold30 || 0) -
-        Number(b.sold30 || 0)
-    )
-    .slice(0, 5);
+    e.preventDefault();
 
-  /* =========================
-     TOP PRODUCTS
-  ========================= */
+    setMessage("");
 
-  const topProducts = [...safeProducts]
-    .sort(
-      (a, b) =>
-        Number(b.sold30 || 0) -
-        Number(a.sold30 || 0)
-    )
-    .slice(0, 5);
+    if (!selectedProduct) {
 
-  /* =========================
-     CATEGORY PERFORMANCE
-  ========================= */
+      setMessage("Please select a product.");
 
-  const categories = Object.values(
-    safeProducts.reduce((acc, product) => {
-      const key =
-        product.category || "Other";
+      setMessageType("error");
 
-      if (!acc[key]) {
-        acc[key] = {
-          name: key,
-          units: 0,
-          value: 0,
-          profit: 0,
-        };
-      }
+      return;
+    }
 
-      acc[key].units += Number(
-        product.sold30 || 0
+
+    const result = createOrder(
+      selectedProduct,
+      quantity
+    );
+
+
+    if (result?.success) {
+
+      setMessage(
+        "Order created successfully! Stock and sales have been updated."
       );
 
-      acc[key].value +=
-        Number(product.costPrice || 0) *
-        Number(product.stock || 0);
+      setMessageType("success");
 
-      acc[key].profit +=
-        (Number(product.price || 0) -
-          Number(product.costPrice || 0)) *
-        Number(product.sold30 || 0);
+      setSelectedProduct("");
 
-      return acc;
-    }, {})
-  ).sort(
-    (a, b) => b.units - a.units
+      setQuantity(1);
+
+    } else {
+
+      setMessage(
+        result?.message ||
+        "Unable to create order."
+      );
+
+      setMessageType("error");
+    }
+  };
+
+
+  const totalRevenue = safeOrders.reduce(
+    (total, order) =>
+      total + Number(order.total || 0),
+    0
   );
 
-  const maxCategoryUnits = Math.max(
-    ...categories.map(
-      (category) => category.units
-    ),
-    1
+
+  const totalUnitsSold = safeOrders.reduce(
+    (total, order) =>
+      total + Number(order.quantity || 0),
+    0
   );
-
-  /* =========================
-     INVENTORY HEALTH
-  ========================= */
-
-  const health = Math.max(
-    0,
-    Math.min(
-      100,
-      Math.round(
-        100 -
-          (lowStock.length /
-            Math.max(
-              safeProducts.length,
-              1
-            )) *
-            45 -
-          (outOfStock.length /
-            Math.max(
-              safeProducts.length,
-              1
-            )) *
-            35
-      )
-    )
-  );
-
-  /* =========================
-     REORDER QUANTITY
-  ========================= */
-
-  const reorderQty = (product) =>
-    Math.max(
-      Number(product.minStock || 0) * 2 -
-        Number(product.stock || 0),
-      Math.ceil(
-        Number(product.sold30 || 0) / 2
-      )
-    );
-
-  /* =====================================================
-     WEEKLY REVENUE + PROFIT DATA
-
-     Uses the actual recorded orders and groups them into
-     the Sunday-Saturday week containing the latest order.
-  ===================================================== */
-
-  const weeklySales = (() => {
-    const validDates = safeOrders
-      .map((order) => new Date(order.date))
-      .filter((date) => !Number.isNaN(date.getTime()));
-
-    const referenceDate = validDates.length
-      ? new Date(Math.max(...validDates.map((date) => date.getTime())))
-      : new Date();
-
-    referenceDate.setHours(0, 0, 0, 0);
-
-    const weekStart = new Date(referenceDate);
-    weekStart.setDate(
-      referenceDate.getDate() - referenceDate.getDay()
-    );
-
-    const days = Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + index);
-
-      const key = date.toISOString().slice(0, 10);
-
-      return {
-        key,
-        label: date.toLocaleDateString("en-IN", { weekday: "short" }),
-        revenue: 0,
-        profit: 0,
-      };
-    });
-
-    const byDate = Object.fromEntries(
-      days.map((day) => [day.key, day])
-    );
-
-    safeOrders.forEach((order) => {
-      const date = new Date(order.date);
-      if (Number.isNaN(date.getTime())) return;
-
-      const key = date.toISOString().slice(0, 10);
-      const day = byDate[key];
-      if (!day) return;
-
-      const orderRevenue = Number(order.total || 0);
-      const orderCost = Number(order.costTotal || 0);
-      const orderProfit = Number.isFinite(Number(order.profit))
-        ? Number(order.profit)
-        : orderRevenue - orderCost;
-
-      day.revenue += orderRevenue;
-      day.profit += orderProfit;
-    });
-
-    return days;
-  })();
 
 
   return (
-    <div className="dashboard-page">
+    <div className="orders-page">
 
-      {/* =================================================
-          HERO
-      ================================================= */}
 
-      <div className="dashboard-hero">
+      {/* HEADER */}
+
+      <div className="page-header">
 
         <div>
 
-          <p className="eyebrow">
-            INVENTORY CONTROL CENTER
-          </p>
-
-          <h1>
-            Good morning,Welcome back!
-          </h1>
+          <h1>Sales & Orders</h1>
 
           <p>
-            See what is selling, what is at
-            risk, and where your inventory
-            money is tied up.
+            Record sales, update stock automatically
+            and track your order history.
           </p>
 
         </div>
 
-        <div className="health-card">
+      </div>
 
-          <div className="health-ring">
 
-            <strong>
-              {health}
-            </strong>
+      {/* SUMMARY */}
 
-            <span>
-              /100
-            </span>
+      <div className="dashboard-stats">
 
+        <div className="stat-card">
+
+          <div className="stat-icon">
+            <ClipboardList size={22} />
           </div>
 
           <div>
 
-            <span>
-              Inventory health
-            </span>
+            <span>Total Orders</span>
 
             <strong>
-              {health >= 80
-                ? "Healthy"
-                : health >= 60
-                ? "Watch"
-                : "Needs attention"}
+              {safeOrders.length}
             </strong>
 
+            <small>
+              Orders recorded
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div className="stat-card">
+
+          <div className="stat-icon">
+            <ShoppingCart size={22} />
+          </div>
+
+          <div>
+
+            <span>Units Sold</span>
+
+            <strong>
+              {totalUnitsSold}
+            </strong>
+
+            <small>
+              Units sold through orders
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div className="stat-card">
+
+          <div className="stat-icon">
+            <IndianRupee size={22} />
+          </div>
+
+          <div>
+
+            <span>Total Revenue</span>
+
+            <strong>
+              ₹{totalRevenue.toLocaleString("en-IN")}
+            </strong>
+
+            <small>
+              Revenue from orders
+            </small>
+
           </div>
 
         </div>
 
       </div>
 
-      {/* =================================================
-          KPI
-      ================================================= */}
 
-      <div className="dashboard-stats kpi-grid">
+      {/* CREATE ORDER */}
 
-        {/* REVENUE */}
+      <div className="order-create-panel">
 
-        <div className="stat-card">
+        <div className="panel-heading">
 
-          <div className="stat-icon">
-            <IndianRupee size={20} />
+          <div>
+
+            <h2>Record a New Sale</h2>
+
+            <p>
+              Select a product and quantity to record
+              a sale.
+            </p>
+
           </div>
 
-          <span>
-            Recorded Revenue
-          </span>
-
-          <strong>
-            {money(revenue)}
-          </strong>
-
-          <small>
-            {safeOrders.length} completed
-            orders
-          </small>
+          <ShoppingCart size={24} />
 
         </div>
 
-        {/* PROFIT */}
 
-        <div className="stat-card">
+        <form
+          className="order-form"
+          onSubmit={handleSubmit}
+        >
 
-          <div className="stat-icon">
-            <TrendingUp size={20} />
-          </div>
+          <div className="form-group">
 
-          <span>
-            Gross Profit
-          </span>
+            <label>
+              Product
+            </label>
 
-          <strong>
-            {money(profit)}
-          </strong>
+            <select
+              value={selectedProduct}
+              onChange={(e) =>
+                setSelectedProduct(e.target.value)
+              }
+            >
 
-          <small>
-            {margin.toFixed(1)}% gross margin
-          </small>
+              <option value="">
+                Select product
+              </option>
 
-        </div>
+              {safeProducts.map(
+                (product) => (
 
-        {/* INVENTORY */}
+                  <option
+                    key={product.id}
+                    value={product.id}
+                    disabled={
+                      Number(product.stock) <= 0
+                    }
+                  >
 
-        <div className="stat-card">
+                    {product.name} —
+                    Stock: {product.stock}
 
-          <div className="stat-icon">
-            <Boxes size={20} />
-          </div>
+                  </option>
 
-          <span>
-            Inventory Value
-          </span>
+                )
+              )}
 
-          <strong>
-            {money(inventoryValue)}
-          </strong>
-
-          <small>
-            {totalStock.toLocaleString(
-              "en-IN"
-            )}{" "}
-            units at cost
-          </small>
-
-        </div>
-
-        {/* STOCK RISK */}
-
-        <div className="stat-card">
-
-          <div className="stat-icon">
-            <AlertTriangle size={20} />
-          </div>
-
-          <span>
-            Stock Risk
-          </span>
-
-          <strong>
-            {lowStock.length}
-          </strong>
-
-          <small>
-            {outOfStock.length} out of stock
-          </small>
-
-        </div>
-
-      </div>
-
-      {/* =================================================
-          MAIN
-      ================================================= */}
-
-      <div className="dashboard-grid dashboard-main-grid">
-
-        {/* =================================================
-            SALES & INVENTORY
-        ================================================= */}
-
-        <section className="dashboard-panel">
-
-          <div className="panel-heading">
-
-            <div>
-
-              <h2>
-                Sales & Inventory Snapshot
-              </h2>
-
-              <p>
-                Current business performance
-                from recorded sales and stock
-                data.
-              </p>
-
-            </div>
-
-            <div className="period-pill">
-              30 DAYS
-            </div>
+            </select>
 
           </div>
 
-          {/* SNAPSHOT NUMBERS */}
 
-          <div className="snapshot-grid">
+          <div className="form-group">
 
-            <div className="snapshot-main">
+            <label>
+              Quantity Sold
+            </label>
 
-              <span>
-                Units sold
-              </span>
-
-              <strong>
-                {totalUnitsSold}
-              </strong>
-
-              <small>
-                Across all products
-              </small>
-
-            </div>
-
-            <div className="snapshot-main">
-
-              <span>
-                Average order value
-              </span>
-
-              <strong>
-                {money(
-                  safeOrders.length
-                    ? revenue /
-                        safeOrders.length
-                    : 0
-                )}
-              </strong>
-
-              <small>
-                Recorded orders
-              </small>
-
-            </div>
-
-            <div className="snapshot-main">
-
-              <span>
-                Stock on hand
-              </span>
-
-              <strong>
-                {totalStock.toLocaleString(
-                  "en-IN"
-                )}
-              </strong>
-
-              <small>
-                Available units
-              </small>
-
-            </div>
+            <input
+              type="number"
+              min="1"
+              max={selected?.stock || 1}
+              value={quantity}
+              onChange={(e) =>
+                setQuantity(e.target.value)
+              }
+            />
 
           </div>
 
-          {/* =================================================
-              SALES OVERVIEW - REVENUE + PROFIT DOUBLE BAR GRAPH
-          ================================================= */}
 
-          <div className="sales-overview-chart">
+          {selected && (
 
-            <div className="sales-chart-header">
+            <div className="selected-product-info">
+
+              <Package size={20} />
+
               <div>
-                <strong>Sales Overview</strong>
-                <span>Revenue and profit for this week</span>
-              </div>
 
-              <div className="sales-chart-legend">
-                <span><i className="legend-dot revenue-dot" />Revenue</span>
-                <span><i className="legend-dot profit-dot" />Profit</span>
-              </div>
-            </div>
+                <strong>
+                  {selected.name}
+                </strong>
 
-            <div className="weekly-bar-chart">
-              <div className="weekly-y-axis">
-                {(() => {
-                  const maxValue = Math.max(
-                    ...weeklySales.map((day) => Math.max(day.revenue, day.profit)),
-                    1
-                  );
-
-                  return [1, 0.75, 0.5, 0.25, 0].map((ratio) => (
-                    <span key={ratio}>
-                      ₹{Math.round(maxValue * ratio).toLocaleString("en-IN")}
-                    </span>
-                  ));
-                })()}
-              </div>
-
-              <div className="weekly-chart-main">
-                <div className="weekly-grid">
-                  <span /><span /><span /><span /><span />
-                </div>
-
-                <div className="weekly-bars">
-                  {weeklySales.map((day) => {
-                    const maxValue = Math.max(
-                      ...weeklySales.map((item) => Math.max(item.revenue, item.profit)),
-                      1
-                    );
-
-                    const revenueHeight = (day.revenue / maxValue) * 100;
-                    const profitHeight = (day.profit / maxValue) * 100;
-
-                    return (
-                      <div className="weekly-bar-group" key={day.key}>
-                        <div className="weekly-bars-wrap">
-                          <div
-                            className="weekly-bar revenue-bar"
-                            style={{ height: `${revenueHeight}%` }}
-                            title={`${day.label}: Revenue ${money(day.revenue)}`}
-                          >
-                            {day.revenue > 0 && (
-                              <span className="bar-value revenue-value">{money(day.revenue)}</span>
-                            )}
-                          </div>
-
-                          <div
-                            className="weekly-bar profit-bar"
-                            style={{ height: `${profitHeight}%` }}
-                            title={`${day.label}: Profit ${money(day.profit)}`}
-                          >
-                            {day.profit > 0 && (
-                              <span className="bar-value profit-value">{money(day.profit)}</span>
-                            )}
-                          </div>
-                        </div>
-
-                        <span className="weekly-day-label">{day.label}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* =================================================
-            ATTENTION
-        ================================================= */}
-
-        <section className="dashboard-panel">
-
-          <div className="panel-heading">
-
-            <div>
-
-              <h2>
-                Needs Attention
-              </h2>
-
-              <p>
-                Actions that protect
-                availability.
-              </p>
-
-            </div>
-
-            <AlertTriangle size={20} />
-
-          </div>
-
-          <div className="attention-summary">
-
-            <div>
-
-              <strong>
-                {lowStock.length}
-              </strong>
-
-              <span>
-                low stock
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong>
-                {outOfStock.length}
-              </strong>
-
-              <span>
-                out of stock
-              </span>
-
-            </div>
-
-          </div>
-
-          <div className="decision-list">
-
-            {lowStock
-              .slice(0, 4)
-              .map((product) => (
-
-                <div
-                  className="decision-row"
-                  key={product.id}
-                >
-
-                  <div>
-
-                    <strong>
-                      {product.name}
-                    </strong>
-
-                    <span>
-                      {product.stock} left ·
-                      min{" "}
-                      {product.minStock}
-                    </span>
-
-                  </div>
-
-                  <div className="decision-action">
-
-                    <b>
-                      Order{" "}
-                      {reorderQty(product)}
-                    </b>
-
-                    <small>
-                      units
-                    </small>
-
-                  </div>
-
-                </div>
-
-              ))}
-
-            {!lowStock.length && (
-
-              <div className="empty-state">
-
-                <CheckCircle2
-                  size={28}
-                />
-
-                <h3>
-                  Inventory is healthy
-                </h3>
-
-                <p>
-                  No products are below
-                  minimum stock.
-                </p>
+                <span>
+                  ₹{Number(
+                    selected.price
+                  ).toLocaleString("en-IN")} per unit
+                  {" • "}
+                  {selected.stock} available
+                </span>
 
               </div>
 
+            </div>
+
+          )}
+
+
+          <button
+            className="primary-btn"
+            type="submit"
+          >
+
+          <ShoppingCart size={18} />
+             Record Sale
+          </button>
+
+        </form>
+
+
+        {message && (
+
+          <div
+            className={
+              messageType === "success"
+                ? "success-message"
+                : "error-message"
+            }
+          >
+
+            {messageType === "success" ? (
+              <CheckCircle size={18} />
+            ) : (
+              <AlertTriangle size={18} />
             )}
 
+            {message}
+
           </div>
 
-        </section>
+        )}
 
       </div>
 
-      {/* =================================================
-          THREE COLUMNS
-      ================================================= */}
 
-      <div className="dashboard-grid three-panel-grid">
+      {/* ORDER HISTORY */}
 
-        {/* =================================================
-            TOP SELLERS
-        ================================================= */}
+      <div className="analytics-panel">
 
-        <section className="dashboard-panel">
+        <div className="panel-heading">
 
-          <div className="panel-heading">
+          <div>
 
-            <div>
+            <h2>Order History</h2>
 
-              <h2>
-                Top Sellers
-              </h2>
-
-              <p>
-                Highest unit movement.
-              </p>
-
-            </div>
-
-            <TrendingUp size={20} />
+            <p>
+              Recent sales recorded in SmartShelf.
+            </p>
 
           </div>
 
-          <div className="dashboard-list">
+          <ClipboardList size={24} />
 
-            {topProducts.map(
-              (
-                product,
-                index
-              ) => (
+        </div>
+
+
+        {safeOrders.length === 0 ? (
+
+          <div className="empty-analysis">
+
+            <ShoppingCart size={32} />
+
+            <strong>
+              No orders yet
+            </strong>
+
+            <p>
+              Record your first sale above.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="orders-table">
+
+            <div className="orders-table-header">
+
+              <span>Order</span>
+              <span>Product</span>
+              <span>Quantity</span>
+              <span>Total</span>
+              <span>Date</span>
+
+            </div>
+
+
+            {safeOrders.map(
+              (order) => (
 
                 <div
-                  className="dashboard-list-row"
-                  key={product.id}
+                  className="orders-table-row"
+                  key={order.id}
                 >
 
-                  <div className="rank">
-                    {index + 1}
-                  </div>
+                  <strong>
+                    {order.id}
+                  </strong>
 
-                  <div>
+                  <span>
+                    {order.productName}
+                  </span>
 
-                    <strong>
-                      {product.name}
-                    </strong>
+                  <span>
+                    {order.quantity}
+                  </span>
 
-                    <span>
-                      {product.category}
-                    </span>
+                  <strong>
+                    ₹{Number(
+                      order.total || 0
+                    ).toLocaleString("en-IN")}
+                  </strong>
 
-                  </div>
-
-                  <div className="list-value">
-
-                    <strong>
-                      {product.sold30 || 0}
-                    </strong>
-
-                    <span>
-                      sold
-                    </span>
-
-                  </div>
+                  <span>
+                    {order.date}
+                  </span>
 
                 </div>
 
@@ -803,352 +439,12 @@ function Dashboard({
 
           </div>
 
-        </section>
-
-        {/* =================================================
-            LOW SALES
-        ================================================= */}
-
-        <section className="dashboard-panel">
-
-          <div className="panel-heading">
-
-            <div>
-
-              <h2>
-                Low Sales
-              </h2>
-
-              <p>
-                Stock that may need
-                review.
-              </p>
-
-            </div>
-
-            <TrendingDown size={20} />
-
-          </div>
-
-          <div className="dashboard-list">
-
-            {slowMoving.map(
-              (product) => (
-
-                <div
-                  className="dashboard-list-row"
-                  key={product.id}
-                >
-
-                  <div className="dashboard-product-icon">
-
-                    <Package size={16} />
-
-                  </div>
-
-                  <div>
-
-                    <strong>
-                      {product.name}
-                    </strong>
-
-                    <span>
-                      {product.stock} units
-                      held
-                    </span>
-
-                  </div>
-
-                  <div className="list-value">
-
-                    <strong>
-                      {product.sold30 || 0}
-                    </strong>
-
-                    <span>
-                      sold
-                    </span>
-
-                  </div>
-
-                </div>
-
-              )
-            )}
-
-          </div>
-
-        </section>
-
-        {/* =================================================
-            CATEGORY PERFORMANCE
-        ================================================= */}
-
-        <section className="dashboard-panel">
-
-          <div className="panel-heading">
-
-            <div>
-
-              <h2>
-                Category Performance
-              </h2>
-
-              <p>
-                Unit movement by category.
-              </p>
-
-            </div>
-
-            <BarChart3 size={20} />
-
-          </div>
-
-          <div className="category-list">
-
-            {categories
-              .slice(0, 5)
-              .map(
-                (category) => (
-
-                  <div
-                    className="category-item"
-                    key={category.name}
-                  >
-
-                    <div className="category-top">
-
-                      <strong>
-                        {category.name}
-                      </strong>
-
-                      <span>
-                        {category.units} units
-                      </span>
-
-                    </div>
-
-                    <div className="category-bar">
-
-                      <div
-                        className="category-bar-fill"
-                        style={{
-                          width: `${
-                            (category.units /
-                              maxCategoryUnits) *
-                            100
-                          }%`,
-                        }}
-                      />
-
-                    </div>
-
-                    <small>
-
-                      {money(
-                        category.value
-                      )}{" "}
-                      inventory ·{" "}
-                      {money(
-                        category.profit
-                      )}{" "}
-                      potential profit
-
-                    </small>
-
-                  </div>
-
-                )
-              )}
-
-          </div>
-
-        </section>
+        )}
 
       </div>
-
-      {/* =================================================
-          RECENT ORDERS
-      ================================================= */}
-
-      <section className="dashboard-panel recent-orders-panel">
-
-        <div className="panel-heading">
-
-          <div>
-
-            <h2>
-              Recent Orders
-            </h2>
-
-            <p>
-              Latest completed sales.
-            </p>
-
-          </div>
-
-          <ClipboardList size={20} />
-
-        </div>
-
-        {safeOrders.length ? (
-
-          <div className="recent-order-list">
-
-            {safeOrders
-              .slice(0, 5)
-              .map(
-                (order) => (
-
-                  <div
-                    className="recent-order-row"
-                    key={order.id}
-                  >
-
-                    <div>
-
-                      <strong>
-                        {order.id}
-                      </strong>
-
-                      <span>
-                        {order.productName} ·{" "}
-                        {order.quantity} units
-                      </span>
-
-                    </div>
-
-                    <div>
-
-                      <strong>
-                        {money(
-                          order.total
-                        )}
-                      </strong>
-
-                      <span className="profit-text">
-                        +
-                        {money(
-                          order.profit
-                        )}{" "}
-                        profit
-                      </span>
-
-                    </div>
-
-                    <time>
-                      {order.date}
-                    </time>
-
-                  </div>
-
-                )
-              )}
-
-          </div>
-
-        ) : (
-
-          <div className="empty-state">
-
-            <ShoppingCart size={28} />
-
-            <h3>
-              No sales recorded yet
-            </h3>
-
-            <p>
-              Record your first sale from
-              Sales & Orders.
-            </p>
-
-          </div>
-
-        )}
-
-      </section>
-
-      {/* =================================================
-          ACTIVITY
-      ================================================= */}
-
-      <section className="dashboard-panel activity-panel">
-
-        <div className="panel-heading">
-
-          <div>
-
-            <h2>
-              Recent Activity
-            </h2>
-
-            <p>
-              Inventory events in
-              chronological order.
-            </p>
-
-          </div>
-
-          <Package size={20} />
-
-        </div>
-
-        {safeActivities.length ? (
-
-          <div className="activity-list">
-
-            {safeActivities
-              .slice(0, 6)
-              .map(
-                (activity) => (
-
-                  <div
-                    className="activity-row"
-                    key={activity.id}
-                  >
-
-                    <div
-                      className={`activity-dot ${
-                        activity.type ||
-                        "info"
-                      }`}
-                    />
-
-                    <div>
-
-                      <strong>
-                        {activity.message}
-                      </strong>
-
-                      <span>
-                        {activity.time}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                )
-              )}
-
-          </div>
-
-        ) : (
-
-          <div className="empty-state">
-
-            <p>
-              No activity yet.
-            </p>
-
-          </div>
-
-        )}
-
-      </section>
 
     </div>
   );
 }
 
-export default Dashboard;
+export default Orders;
