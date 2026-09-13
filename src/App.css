@@ -3765,3 +3765,586 @@ a {
   }
 
 }
+
+/* =========================================================
+   ORDERS SUMMARY - FINAL LAYOUT
+   ========================================================= */
+
+.orders-page .dashboard-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.orders-page .dashboard-stats .stat-card {
+  min-width: 0;
+  min-height: 155px;
+
+  padding: 22px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+
+  box-sizing: border-box;
+}
+
+/* Icon */
+
+.orders-page .dashboard-stats .stat-card > .stat-icon {
+  width: 42px;
+  height: 42px;
+
+  margin: 0 0 15px 0 !important;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+/* Text container */
+
+.orders-page .dashboard-stats .stat-card > div:last-child {
+  width: 100%;
+  min-width: 0;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+/* Title */
+
+.orders-page .dashboard-stats .stat-card > div:last-child > span {
+  display: block !important;
+
+  margin: 0 !important;
+
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* Number */
+
+.orders-page .dashboard-stats .stat-card > div:last-child > strong {
+  display: block !important;
+
+  margin: 5px 0 0 !important;
+
+  color: var(--text);
+  font-size: 27px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+/* Description */
+
+.orders-page .dashboard-stats .stat-card > div:last-child > small {
+  display: block !important;
+
+  margin: 5px 0 0 !important;
+
+  color: #9da5b4;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .orders-page .dashboard-stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =========================================================
+   RESTOCKING REQUIRED PAGE
+   ========================================================= */
+
+.low-stock-page {
+  width: 100%;
+}
+
+
+/* =========================================================
+   ALERT BANNER
+   ========================================================= */
+
+.low-stock-page .alert-banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 18px 20px;
+  margin-bottom: 28px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ffd7d7;
+  border-radius: 14px;
+
+  background: #fff7f7;
+}
+
+.low-stock-page .alert-banner-icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #ffe7e7;
+  color: #ef4444;
+}
+
+.low-stock-page .alert-banner strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #17213f;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.low-stock-page .alert-banner p {
+  margin: 0;
+
+  color: #69758c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.stock-section-heading {
+  margin-bottom: 16px;
+}
+
+.stock-section-heading h2 {
+  margin: 0 0 5px;
+
+  color: #17213f;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.stock-section-heading p {
+  margin: 0;
+
+  color: #77839a;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   STOCK GRID
+   ========================================================= */
+
+.low-stock-page .stock-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+
+  align-items: stretch;
+}
+
+
+/* =========================================================
+   STOCK CARD
+   ========================================================= */
+
+.low-stock-page .stock-card {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 14px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e7ef;
+  border-radius: 13px;
+
+  box-shadow:
+    0 4px 16px rgba(23, 33, 63, 0.045);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.low-stock-page .stock-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 24px rgba(23, 33, 63, 0.08);
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE
+   ========================================================= */
+
+.stock-image-wrapper {
+  position: relative;
+
+  width: 100%;
+  height: 145px;
+
+  overflow: hidden;
+
+  margin-bottom: 13px;
+
+  border-radius: 10px;
+
+  background: #f4f6f9;
+}
+
+.stock-product-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+
+  background: #f4f6f9;
+}
+
+.stock-image-fallback {
+  width: 100%;
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #ff7300;
+
+  background: #fff3eb;
+}
+
+
+/* =========================================================
+   STATUS BADGE
+   ========================================================= */
+
+.stock-status-badge {
+  position: absolute;
+
+  top: 9px;
+  right: 9px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  backdrop-filter: blur(5px);
+}
+
+.stock-status-badge.low {
+  color: #d97706;
+  background: #fff4d6;
+}
+
+.stock-status-badge.out {
+  color: #dc2626;
+  background: #ffe4e4;
+}
+
+
+/* =========================================================
+   PRODUCT NAME
+   ========================================================= */
+
+.low-stock-page .stock-product-name {
+  margin: 0 0 6px;
+
+  color: #17213f;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   CATEGORY
+   ========================================================= */
+
+.stock-category {
+  width: fit-content;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 4px 8px;
+  margin-bottom: 15px;
+
+  border-radius: 999px;
+
+  color: #5965a8;
+  background: #eef0ff;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   STOCK INFORMATION
+   ========================================================= */
+
+.stock-info {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  margin-bottom: 14px;
+}
+
+.stock-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.stock-info-label {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #7b879b;
+
+  font-size: 10px;
+}
+
+.stock-info-label svg {
+  flex-shrink: 0;
+}
+
+.stock-info-row strong {
+  flex-shrink: 0;
+
+  color: #17213f;
+
+  font-size: 12px;
+}
+
+.stock-info-row .stock-warning {
+  color: #f97316;
+}
+
+.stock-info-row .stock-danger {
+  color: #ef4444;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.stock-progress-section {
+  margin-bottom: 16px;
+}
+
+.stock-progress-label {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 6px;
+
+  color: #8a95a7;
+
+  font-size: 9px;
+}
+
+.stock-progress-label strong {
+  color: #69758c;
+}
+
+.stock-progress {
+  width: 100%;
+  height: 6px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #edf0f4;
+}
+
+.stock-progress-fill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #f59e0b;
+
+  transition: width 0.3s ease;
+}
+
+.stock-progress-fill.danger {
+  background: #ef4444;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.stock-card-footer {
+  margin-top: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid #edf0f4;
+}
+
+.stock-price {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+
+  color: #17213f;
+}
+
+.stock-price strong {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   RESTOCK BUTTON
+   ========================================================= */
+
+.restock-btn {
+  border: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-height: 34px;
+
+  padding: 8px 13px;
+
+  border-radius: 8px;
+
+  color: #ffffff;
+  background: #ff7300;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.restock-btn:hover {
+  background: #e96600;
+  transform: translateY(-1px);
+}
+
+.restock-btn.critical {
+  background: #ef4444;
+}
+
+.restock-btn.critical:hover {
+  background: #dc2626;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.low-stock-page .large-empty {
+  margin-top: 20px;
+  min-height: 260px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .low-stock-page .stock-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .low-stock-page .stock-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .low-stock-page .alert-banner {
+    align-items: flex-start;
+  }
+
+  .stock-image-wrapper {
+    height: 180px;
+  }
+
+}

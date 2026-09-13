@@ -182,7 +182,7 @@ function Orders({
 
           <div>
 
-            <span>Total Revenue</span>
+            <span>Total Revenue   </span>
 
             <strong>
               ₹{totalRevenue.toLocaleString("en-IN")}
