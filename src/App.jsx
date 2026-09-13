@@ -39,7 +39,7 @@ const productImages = {
     "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=900&q=85",
 
   "USB-C Cable":
-    "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=900&q=85",
+    "https://tse3.mm.bing.net/th/id/OIP.xGSBuzqLQUhYFZB5sentCQHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
 
   "Ergonomic Desk Chair":
     "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?auto=format&fit=crop&w=900&q=85",
@@ -65,7 +65,6 @@ const productImages = {
   "Desk Organizer":
     "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=900&q=85",
 };
-
 
 /* =====================================================
    DEFAULT PRODUCTS
@@ -231,48 +230,33 @@ const defaultProducts = [
 
 
 /* =====================================================
+   PRODUCT DATA VERSION
+
+   Forces the app to discard an older product dataset once
+   when the product definitions are updated. This prevents
+   localhost from continuing to display stale products.
+   ===================================================== */
+const PRODUCT_DATA_VERSION = "2026-09-13-v1";
+const PRODUCT_DATA_VERSION_KEY = "smartshelf_products_version";
+
+
+/* =====================================================
    SAFE LOCAL STORAGE READER
    ===================================================== */
 
 function readStorage(key, fallback) {
   try {
-    const saved = localStorage.getItem(key);
+    const saved =
+      localStorage.getItem(key);
 
     if (!saved) {
       return fallback;
     }
 
     return JSON.parse(saved);
-  } catch (error) {
-    console.error(
-      `Could not read localStorage key "${key}":`,
-      error
-    );
 
+  } catch {
     return fallback;
-  }
-}
-
-
-/* =====================================================
-   SAFE LOCAL STORAGE WRITER
-   ===================================================== */
-
-function writeStorage(key, value) {
-  try {
-    localStorage.setItem(
-      key,
-      JSON.stringify(value)
-    );
-
-    return true;
-  } catch (error) {
-    console.error(
-      `Could not save localStorage key "${key}":`,
-      error
-    );
-
-    return false;
   }
 }
 
@@ -282,7 +266,8 @@ function writeStorage(key, value) {
    ===================================================== */
 
 function demoDate(daysAgo) {
-  const date = new Date();
+  const date =
+    new Date();
 
   date.setDate(
     date.getDate() - daysAgo
@@ -421,7 +406,8 @@ const demoActivities = [
 
 function SmartShelfApp() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
 
   /* ===================================================
@@ -445,7 +431,6 @@ function SmartShelfApp() {
       )
     );
 
-
   /* ===================================================
      PRODUCTS
      =================================================== */
@@ -459,98 +444,75 @@ function SmartShelfApp() {
           null
         );
 
+      const savedVersion =
+        localStorage.getItem(
+          PRODUCT_DATA_VERSION_KEY
+        );
 
       /*
         IMPORTANT:
-
-        If saved products exist,
-        use them.
-
-        Do NOT replace them with
-        defaultProducts after login.
+        If the stored product data belongs to an older
+        version, load the current defaultProducts.
+        This removes the old product list that was causing
+        localhost and the updated app to show different data.
       */
-
       if (
+        savedVersion !== PRODUCT_DATA_VERSION ||
         !Array.isArray(saved) ||
         saved.length === 0
       ) {
+        localStorage.setItem(
+          PRODUCT_DATA_VERSION_KEY,
+          PRODUCT_DATA_VERSION
+        );
+
         return defaultProducts;
       }
 
-
       /*
-        Merge saved products with defaults
-        so old products still get image URLs
-        and missing fields.
+        Keep the user's saved stock/price values, but always
+        match records by name first and always use the correct
+        image for the product name.
       */
+      return saved.map((product, index) => {
+        const matchingDefault =
+          defaultProducts.find(
+            (item) => item.name === product.name
+          ) ||
+          defaultProducts.find(
+            (item) => item.id === product.id
+          ) ||
+          defaultProducts[index % defaultProducts.length];
 
-      return saved.map(
-        (product, index) => {
+        return {
+          ...matchingDefault,
+          ...product,
+          price: Number(
+            product.price ?? matchingDefault?.price ?? 0
+          ),
+          costPrice: Number(
+            product.costPrice ?? matchingDefault?.costPrice ?? 0
+          ),
+          stock: Number(product.stock ?? 0),
+          minStock: Number(
+            product.minStock ?? matchingDefault?.minStock ?? 0
+          ),
+          sold30: Number(
+            product.sold30 ?? matchingDefault?.sold30 ?? 0
+          ),
+          condition:
+            product.condition ||
+            matchingDefault?.condition ||
+            "Good",
+          image:
+            productImages[product.name] ||
+            matchingDefault?.image ||
+            product.image ||
+            "",
+        };
+      });
 
-          const matchingDefault =
-            defaultProducts.find(
-              (item) =>
-                item.id === product.id ||
-                item.name === product.name
-            ) ||
-            defaultProducts[
-              index %
-              defaultProducts.length
-            ];
-
-
-          return {
-            ...matchingDefault,
-            ...product,
-
-            price:
-              Number(
-                product.price ??
-                matchingDefault.price ??
-                0
-              ),
-
-            costPrice:
-              Number(
-                product.costPrice ??
-                matchingDefault.costPrice ??
-                0
-              ),
-
-            stock:
-              Number(
-                product.stock ??
-                0
-              ),
-
-            minStock:
-              Number(
-                product.minStock ??
-                matchingDefault.minStock ??
-                0
-              ),
-
-            sold30:
-              Number(
-                product.sold30 ??
-                matchingDefault.sold30 ??
-                0
-              ),
-
-            condition:
-              product.condition ||
-              matchingDefault.condition ||
-              "Good",
-
-            image:
-              product.image ||
-              matchingDefault.image ||
-              "",
-          };
-        }
-      );
     });
-
 
   /* ===================================================
      ORDERS
@@ -567,22 +529,22 @@ function SmartShelfApp() {
 
 
       /*
-        Only use demo orders when there
-        are NO saved orders.
-
-        Once the user creates orders,
-        those orders are preserved.
+        If there are no saved orders,
+        automatically load demo orders.
       */
 
       if (
         !Array.isArray(saved) ||
         saved.length === 0
       ) {
+
         return makeDemoOrders();
+
       }
 
 
       return saved;
+
     });
 
 
@@ -600,29 +562,18 @@ function SmartShelfApp() {
         );
 
 
-      /*
-        VERY IMPORTANT:
-
-        If localStorage contains an array,
-        ALWAYS use that array.
-
-        Do not replace it with demoActivities
-        simply because the array is empty.
-      */
-
       if (
-        Array.isArray(saved)
+        !Array.isArray(saved) ||
+        saved.length === 0
       ) {
-        return saved;
+
+        return demoActivities;
+
       }
 
 
-      /*
-        Demo activities are used only on
-        the very first installation.
-      */
+      return saved;
 
-      return demoActivities;
     });
 
 
@@ -648,9 +599,14 @@ function SmartShelfApp() {
 
   useEffect(() => {
 
-    writeStorage(
+    localStorage.setItem(
       "smartshelf_products",
-      products
+      JSON.stringify(products)
+    );
+
+    localStorage.setItem(
+      PRODUCT_DATA_VERSION_KEY,
+      PRODUCT_DATA_VERSION
     );
 
   }, [products]);
@@ -662,9 +618,9 @@ function SmartShelfApp() {
 
   useEffect(() => {
 
-    writeStorage(
+    localStorage.setItem(
       "smartshelf_orders",
-      orders
+      JSON.stringify(orders)
     );
 
   }, [orders]);
@@ -676,9 +632,9 @@ function SmartShelfApp() {
 
   useEffect(() => {
 
-    writeStorage(
+    localStorage.setItem(
       "smartshelf_activities",
-      activities
+      JSON.stringify(activities)
     );
 
   }, [activities]);
@@ -688,164 +644,142 @@ function SmartShelfApp() {
      LOGIN
      =================================================== */
 
-  const handleLogin = (email) => {
+  const handleLogin =
+    (email) => {
 
-    const userData = {
-      name: "Manager",
-      role: "Inventory Manager",
-      email: email,
+      const userData = {
+
+        name:
+          "Manager",
+
+        role:
+          "Inventory Manager",
+
+        email:
+          email,
+
+      };
+
+
+      localStorage.setItem(
+        "smartshelf_user",
+        JSON.stringify(userData)
+      );
+
+
+      setUser(
+        userData
+      );
+
+
+      setIsLoggedIn(
+        true
+      );
+
+
+      /*
+        Always go to Dashboard
+        after successful login.
+      */
+
+      navigate(
+        "/",
+        {
+          replace: true,
+        }
+      );
+
     };
-
-
-    /*
-      Save only the login information.
-
-      DO NOT clear:
-      - products
-      - orders
-      - activities
-    */
-
-    writeStorage(
-      "smartshelf_user",
-      userData
-    );
-
-
-    setUser(userData);
-
-    setIsLoggedIn(true);
-
-
-    /*
-      Always send the user to Dashboard.
-    */
-
-    navigate(
-      "/",
-      {
-        replace: true,
-      }
-    );
-  };
 
 
   /* ===================================================
      LOGOUT
      =================================================== */
 
-  const handleLogout = () => {
+  const handleLogout =
+    () => {
 
-    /*
-      IMPORTANT:
+      /*
+        Remove authentication.
+      */
 
-      Only remove the authentication/session.
-
-      NEVER remove:
-      smartshelf_products
-      smartshelf_orders
-      smartshelf_activities
-    */
-
-    localStorage.removeItem(
-      "smartshelf_user"
-    );
+      localStorage.removeItem(
+        "smartshelf_user"
+      );
 
 
-    setUser(null);
+      setUser(null);
 
-    setIsLoggedIn(false);
+      setIsLoggedIn(false);
 
-    setSearchTerm("");
-
-
-    /*
-      Always go back to Dashboard/login URL.
-      This prevents:
-
-      /orders → logout → /orders
-    */
-
-    navigate(
-      "/",
-      {
-        replace: true,
-      }
-    );
-  };
+      setSearchTerm("");
 
 
-  /* ===================================================
-     ADD ACTIVITY
-     =================================================== */
+      /*
+        IMPORTANT:
+        Change the browser URL too.
 
-  const addActivity = (
-    message,
-    type = "info"
-  ) => {
+        This fixes:
+        /orders → logout → still /orders
+      */
 
-    const activity = {
-      id:
-        `activity-${Date.now()}-${Math.random()
-          .toString(36)
-          .slice(2, 8)}`,
+      navigate(
+        "/",
+        {
+          replace: true,
+        }
+      );
 
-      message,
-
-      type,
-
-      time:
-        new Date().toLocaleString(
-          "en-IN",
-          {
-            dateStyle: "medium",
-            timeStyle: "short",
-          }
-        ),
     };
 
 
-    setActivities(
-      (previous) => {
+  /* ===================================================
+     ACTIVITY
+     =================================================== */
 
-        /*
-          Put newest activity first.
-        */
+  const addActivity =
+    (
+      message,
+      type = "info"
+    ) => {
 
-        const updated = [
+      const activity = {
+
+        id:
+          Date.now(),
+
+        message:
+          message,
+
+        type:
+          type,
+
+        time:
+          new Date().toLocaleString(
+            "en-IN",
+            {
+              dateStyle:
+                "medium",
+
+              timeStyle:
+                "short",
+            }
+          ),
+
+      };
+
+
+      setActivities(
+        (previous) => [
+
           activity,
+
           ...previous,
-        ];
 
+        ].slice(0, 30)
+      );
 
-        /*
-          Keep up to 100 activities.
-
-          This means activities are not
-          constantly disappearing after
-          a few actions.
-        */
-
-        const finalActivities =
-          updated.slice(0, 100);
-
-
-        /*
-          SAVE IMMEDIATELY.
-
-          This is the important persistence fix.
-        */
-
-        writeStorage(
-          "smartshelf_activities",
-          finalActivities
-        );
-
-
-        return finalActivities;
-      }
-    );
-  };
+    };
 
 
   /* ===================================================
@@ -864,22 +798,26 @@ function SmartShelfApp() {
 
         price:
           Number(
-            newProduct.price || 0
+            newProduct.price ||
+              0
           ),
 
         costPrice:
           Number(
-            newProduct.costPrice || 0
+            newProduct.costPrice ||
+              0
           ),
 
         stock:
           Number(
-            newProduct.stock || 0
+            newProduct.stock ||
+              0
           ),
 
         minStock:
           Number(
-            newProduct.minStock || 0
+            newProduct.minStock ||
+              0
           ),
 
         sold30:
@@ -892,13 +830,17 @@ function SmartShelfApp() {
         image:
           newProduct.image ||
           "",
+
       };
 
 
       setProducts(
         (previous) => [
+
           product,
+
           ...previous,
+
         ]
       );
 
@@ -907,6 +849,7 @@ function SmartShelfApp() {
         `${product.name} was added to the inventory.`,
         "success"
       );
+
     };
 
 
@@ -927,9 +870,7 @@ function SmartShelfApp() {
         Number(quantity);
 
 
-      /* ---------------------------------------------
-         VALIDATE QUANTITY
-         --------------------------------------------- */
+      /* Validate quantity */
 
       if (
         !Number.isFinite(
@@ -939,16 +880,19 @@ function SmartShelfApp() {
       ) {
 
         return {
-          success: false,
+
+          success:
+            false,
+
           message:
             "Quantity must be at least 1.",
+
         };
+
       }
 
 
-      /* ---------------------------------------------
-         FIND PRODUCT
-         --------------------------------------------- */
+      /* Find product */
 
       const selectedProduct =
         products.find(
@@ -963,26 +907,28 @@ function SmartShelfApp() {
       ) {
 
         return {
-          success: false,
+
+          success:
+            false,
+
           message:
             "Product not found.",
+
         };
+
       }
 
 
-      /* ---------------------------------------------
-         AVAILABLE STOCK
-         --------------------------------------------- */
+      /* Available stock */
 
       const availableStock =
         Number(
-          selectedProduct.stock || 0
+          selectedProduct.stock ||
+            0
         );
 
 
-      /* ---------------------------------------------
-         PREVENT OVERSELLING
-         --------------------------------------------- */
+      /* Prevent overselling */
 
       if (
         numericQuantity >
@@ -990,38 +936,42 @@ function SmartShelfApp() {
       ) {
 
         return {
-          success: false,
+
+          success:
+            false,
+
           message:
             `Only ${availableStock} units are available.`,
+
         };
+
       }
 
 
-      /* ---------------------------------------------
-         CALCULATE SALE
-         --------------------------------------------- */
+      /* Calculate sale */
 
       const total =
         Number(
-          selectedProduct.price || 0
+          selectedProduct.price ||
+            0
         ) *
         numericQuantity;
 
 
       const cost =
         Number(
-          selectedProduct.costPrice || 0
+          selectedProduct.costPrice ||
+            0
         ) *
         numericQuantity;
 
 
       const profit =
-        total - cost;
+        total -
+        cost;
 
 
-      /* ---------------------------------------------
-         GENERATE NEXT ORDER NUMBER
-         --------------------------------------------- */
+      /* Generate next order number */
 
       const highestOrderNumber =
         orders.reduce(
@@ -1039,7 +989,9 @@ function SmartShelfApp() {
 
 
             if (!match) {
+
               return highest;
+
             }
 
 
@@ -1049,18 +1001,19 @@ function SmartShelfApp() {
                 match[1]
               )
             );
+
           },
+
           1000
         );
 
 
       const nextOrderNumber =
-        highestOrderNumber + 1;
+        highestOrderNumber +
+        1;
 
 
-      /* ---------------------------------------------
-         CREATE ORDER
-         --------------------------------------------- */
+      /* Create order */
 
       const order = {
 
@@ -1089,17 +1042,23 @@ function SmartShelfApp() {
           new Date().toLocaleDateString(
             "en-IN",
             {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
+              day:
+                "2-digit",
+
+              month:
+                "short",
+
+              year:
+                "numeric",
             }
           ),
+
       };
 
 
-      /* ---------------------------------------------
+      /* =============================================
          UPDATE STOCK
-         --------------------------------------------- */
+         ============================================= */
 
       setProducts(
         (previous) =>
@@ -1107,82 +1066,73 @@ function SmartShelfApp() {
             (product) => {
 
               if (
-                Number(product.id) !==
+                Number(
+                  product.id
+                ) !==
                 numericProductId
               ) {
+
                 return product;
+
               }
 
 
               return {
+
                 ...product,
 
                 stock:
                   Number(
-                    product.stock || 0
+                    product.stock ||
+                      0
                   ) -
                   numericQuantity,
 
                 sold30:
                   Number(
-                    product.sold30 || 0
+                    product.sold30 ||
+                      0
                   ) +
                   numericQuantity,
+
               };
+
             }
           )
       );
 
 
-      /* ---------------------------------------------
+      /* =============================================
          ADD ORDER
-         --------------------------------------------- */
+         ============================================= */
 
       setOrders(
-        (previous) => {
+        (previous) => [
 
-          const updatedOrders = [
-            order,
-            ...previous,
-          ];
+          order,
 
+          ...previous,
 
-          /*
-            Save immediately.
-          */
-
-          writeStorage(
-            "smartshelf_orders",
-            updatedOrders
-          );
-
-
-          return updatedOrders;
-        }
+        ]
       );
 
 
-      /* ---------------------------------------------
-         SALE ACTIVITY
-         --------------------------------------------- */
+      /* =============================================
+         ADD ACTIVITY
+         ============================================= */
 
       addActivity(
+
         `${order.id}: ${numericQuantity} × ${selectedProduct.name} sold for ₹${total.toLocaleString("en-IN")}.`,
+
         "success"
+
       );
 
 
-      /* ---------------------------------------------
-         STOCK STATUS
-         
-         IMPORTANT RULE:
-         
-         0       = Out Of Stock
-         1 - 5   = Low Stock
-         > 5     = In Stock
-         
-         minStock is NOT used here.
-         --------------------------------------------- */
+      /* =============================================
+         LOW STOCK WARNING
+         ============================================= */
 
       const remainingStock =
         availableStock -
@@ -1190,32 +1140,34 @@ function SmartShelfApp() {
 
 
       if (
-        remainingStock >= 1 &&
-        remainingStock <= 5
+        remainingStock <
+        Number(
+          selectedProduct.minStock ||
+            0
+        )
       ) {
 
         addActivity(
-          `${selectedProduct.name} is now low on stock.`,
+
+          `${selectedProduct.name} is now below its minimum stock level.`,
+
           "warning"
+
         );
-      }
 
-
-      if (
-        remainingStock === 0
-      ) {
-
-        addActivity(
-          `${selectedProduct.name} is now out of stock.`,
-          "warning"
-        );
       }
 
 
       return {
-        success: true,
-        order: order,
+
+        success:
+          true,
+
+        order:
+          order,
+
       };
+
     };
 
 
@@ -1237,7 +1189,9 @@ function SmartShelfApp() {
         !Number.isFinite(qty) ||
         qty <= 0
       ) {
+
         return;
+
       }
 
 
@@ -1250,7 +1204,9 @@ function SmartShelfApp() {
 
 
       if (!product) {
+
         return;
+
       }
 
 
@@ -1263,275 +1219,275 @@ function SmartShelfApp() {
                 Number(item.id) !==
                 Number(productId)
               ) {
+
                 return item;
+
               }
 
 
               return {
+
                 ...item,
 
                 stock:
                   Number(
-                    item.stock || 0
+                    item.stock ||
+                      0
                   ) +
                   qty,
+
               };
+
             }
           )
       );
 
 
       addActivity(
+
         `${product.name} was restocked with ${qty} units.`,
+
         "success"
+
       );
+
     };
 
 
-  /* ===================================================
-     INVENTORY REPORT
-     =================================================== */
-
-  const generateReport =
-    () => {
-
-      const totalStock =
-        products.reduce(
-          (
-            total,
-            product
-          ) =>
-            total +
-            Number(
-              product.stock || 0
-            ),
-          0
-        );
-
-
-      const totalSold =
-        products.reduce(
-          (
-            total,
-            product
-          ) =>
-            total +
-            Number(
-              product.sold30 || 0
-            ),
-          0
-        );
-
-
-      const inventoryValue =
-        products.reduce(
-          (
-            total,
-            product
-          ) =>
-            total +
-            Number(
-              product.costPrice || 0
-            ) *
-            Number(
-              product.stock || 0
-            ),
-          0
-        );
-
-
-      const revenue =
-        orders.reduce(
-          (
-            total,
-            order
-          ) =>
-            total +
-            Number(
-              order.total || 0
-            ),
-          0
-        );
-
-
-      const profit =
-        orders.reduce(
-          (
-            total,
-            order
-          ) =>
-            total +
-            Number(
-              order.profit || 0
-            ),
-          0
-        );
-
-
-      /* ---------------------------------------------
-         LOW STOCK
-
-         Same rule as Dashboard:
-         1–5 = Low Stock
-         --------------------------------------------- */
-
-      const lowStock =
-        products.filter(
-          (product) => {
-
-            const stock =
-              Number(
-                product.stock || 0
-              );
-
-            return (
-              stock >= 1 &&
-              stock <= 5
-            );
-          }
-        );
-
-
-      /* ---------------------------------------------
-         OUT OF STOCK
-         --------------------------------------------- */
-
-      const outOfStock =
-        products.filter(
-          (product) =>
-            Number(
-              product.stock || 0
-            ) === 0
-        );
-
-
-      /* ---------------------------------------------
-         REPORT
-         --------------------------------------------- */
-
-      const report = [
-
-        "SMARTSHELF INVENTORY REPORT",
-
-        "========================================",
-
-        `Generated: ${new Date().toLocaleString(
-          "en-IN"
-        )}`,
-
-        "",
-
-        `Total Products: ${products.length}`,
-
-        `Stock Units: ${totalStock}`,
-
-        `Units Sold (30 Days): ${totalSold}`,
-
-        `Inventory Value: ₹${inventoryValue.toLocaleString(
-          "en-IN"
-        )}`,
-
-        `Total Orders: ${orders.length}`,
-
-        `Sales Revenue: ₹${revenue.toLocaleString(
-          "en-IN"
-        )}`,
-
-        `Gross Profit: ₹${profit.toLocaleString(
-          "en-IN"
-        )}`,
-
-        `Low Stock Products: ${lowStock.length}`,
-
-        `Out Of Stock Products: ${outOfStock.length}`,
-
-        "",
-
-        "LOW STOCK PRODUCTS",
-
-        "----------------------------------------",
-
-        ...lowStock.map(
-          (product) =>
-            `${product.name}: ${product.stock} units`
-        ),
-
-        "",
-
-        "OUT OF STOCK PRODUCTS",
-
-        "----------------------------------------",
-
-        ...outOfStock.map(
-          (product) =>
-            `${product.name}: 0 units`
-        ),
-
-      ].join("\n");
-
-
-      /* ---------------------------------------------
-         DOWNLOAD REPORT
-         --------------------------------------------- */
-
-      const blob =
-        new Blob(
-          [report],
-          {
-            type:
-              "text/plain;charset=utf-8",
-          }
-        );
-
-
-      const url =
-        URL.createObjectURL(
-          blob
-        );
-
-
-      const link =
-        document.createElement(
-          "a"
-        );
-
-
-      link.href =
-        url;
-
-
-      link.download =
-        "SmartShelf_Inventory_Report.txt";
-
-
-      document.body.appendChild(
-        link
-      );
-
-
-      link.click();
-
-
-      document.body.removeChild(
-        link
-      );
-
-
-      URL.revokeObjectURL(
-        url
-      );
-
-
-      /* ---------------------------------------------
-         REPORT ACTIVITY
-         --------------------------------------------- */
-
-      addActivity(
-        "Inventory report was generated.",
-        "info"
-      );
-    };
-
+ /* ===================================================
+   INVENTORY REPORT
+   =================================================== */
+
+const generateReport = () => {
+  /* ---------------------------------------------
+     INVENTORY SUMMARY
+     --------------------------------------------- */
+
+  const totalStock = products.reduce(
+    (total, product) =>
+      total + Number(product.stock || 0),
+    0
+  );
+
+  const totalSold = products.reduce(
+    (total, product) =>
+      total + Number(product.sold30 || 0),
+    0
+  );
+
+  const inventoryValue = products.reduce(
+    (total, product) =>
+      total +
+      Number(product.costPrice || 0) *
+        Number(product.stock || 0),
+    0
+  );
+
+  const revenue = orders.reduce(
+    (total, order) =>
+      total + Number(order.total || 0),
+    0
+  );
+
+  const profit = orders.reduce(
+    (total, order) =>
+      total + Number(order.profit || 0),
+    0
+  );
+
+
+  /* ---------------------------------------------
+     LOW STOCK PRODUCTS
+
+     1–5 units = Low Stock
+     --------------------------------------------- */
+
+  const lowStock = products.filter((product) => {
+    const stock = Number(product.stock || 0);
+
+    return stock >= 1 && stock <= 5;
+  });
+
+
+  /* ---------------------------------------------
+     OUT OF STOCK PRODUCTS
+     --------------------------------------------- */
+
+  const outOfStock = products.filter(
+    (product) =>
+      Number(product.stock || 0) === 0
+  );
+
+
+  /* ---------------------------------------------
+     DATE
+     --------------------------------------------- */
+
+  const generatedDate = new Date().toLocaleString(
+    "en-IN",
+    {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }
+  );
+
+
+  /* ---------------------------------------------
+     FORMAT PRODUCT NAME COLUMN
+     --------------------------------------------- */
+
+  const productColumnWidth = Math.max(
+    30,
+    ...lowStock.map(
+      (product) =>
+        String(product.name || "").length
+    )
+  );
+
+
+  /* ---------------------------------------------
+     LOW STOCK TABLE
+     --------------------------------------------- */
+
+  const lowStockRows = lowStock.map(
+    (product) => {
+      const name = String(
+        product.name || ""
+      ).padEnd(productColumnWidth);
+
+      const stock = String(
+        product.stock || 0
+      ).padStart(7);
+
+      const minimum = String(
+        product.minStock || 0
+      ).padStart(8);
+
+      return `${name} ${stock} ${minimum}`;
+    }
+  );
+
+
+  /* ---------------------------------------------
+     OUT OF STOCK TABLE
+     --------------------------------------------- */
+
+  const outOfStockRows = outOfStock.map(
+    (product) =>
+      `${String(product.name || "").padEnd(
+        productColumnWidth
+      )} ${String(0).padStart(7)} ${String(
+        product.minStock || 0
+      ).padStart(8)}`
+  );
+
+
+  /* ---------------------------------------------
+     REPORT CONTENT
+     --------------------------------------------- */
+
+  const report = [
+    "SMARTSHELF INVENTORY REPORT",
+    "================================================",
+    "",
+    `Generated: ${generatedDate}`,
+    "",
+    "",
+    "INVENTORY SUMMARY",
+    "------------------------------------------------",
+    `Total Products              : ${products.length}`,
+    `Stock Units                 : ${totalStock}`,
+    `Units Sold (30 Days)        : ${totalSold}`,
+    `Inventory Value             : ₹${inventoryValue.toLocaleString(
+      "en-IN"
+    )}`,
+    `Total Orders                : ${orders.length}`,
+    `Sales Revenue               : ₹${revenue.toLocaleString(
+      "en-IN"
+    )}`,
+    `Gross Profit                : ₹${profit.toLocaleString(
+      "en-IN"
+    )}`,
+    `Restocking Required         : ${lowStock.length}`,
+    `Out Of Stock                : ${outOfStock.length}`,
+    "",
+    "",
+    "LOW STOCK PRODUCTS",
+    "------------------------------------------------",
+    `${"Product".padEnd(
+      productColumnWidth
+    )} ${"Stock".padStart(7)} ${"Minimum".padStart(
+      8
+    )}`,
+    "------------------------------------------------",
+    ...(lowStockRows.length > 0
+      ? lowStockRows
+      : ["No low stock products."]),
+    "",
+    "",
+    "OUT OF STOCK PRODUCTS",
+    "------------------------------------------------",
+    `${"Product".padEnd(
+      productColumnWidth
+    )} ${"Stock".padStart(7)} ${"Minimum".padStart(
+      8
+    )}`,
+    "------------------------------------------------",
+    ...(outOfStockRows.length > 0
+      ? outOfStockRows
+      : ["No out of stock products."]),
+    "",
+    "",
+    "================================================",
+    "END OF REPORT",
+    "================================================",
+  ].join("\n");
+
+
+  /* ---------------------------------------------
+     DOWNLOAD REPORT
+     --------------------------------------------- */
+
+  const blob = new Blob(
+    [report],
+    {
+      type: "text/plain;charset=utf-8",
+    }
+  );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
+
+  link.href = url;
+
+  link.download =
+    "SmartShelf_Inventory_Report.txt";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+
+
+  /* ---------------------------------------------
+     REPORT ACTIVITY
+     --------------------------------------------- */
+
+  addActivity(
+    "Inventory report was generated.",
+    "info"
+  );
+};
 
   /* ===================================================
      LOGGED-OUT ROUTING
@@ -1540,6 +1496,7 @@ function SmartShelfApp() {
   if (!isLoggedIn) {
 
     return (
+
       <Routes>
 
         <Route
@@ -1555,10 +1512,8 @@ function SmartShelfApp() {
 
 
         {/*
-
-          Any route while logged out
-          goes back to login.
-
+          Any route entered while logged out
+          goes back to the login page at "/".
         */}
 
         <Route
@@ -1572,7 +1527,9 @@ function SmartShelfApp() {
         />
 
       </Routes>
+
     );
+
   }
 
 
@@ -1581,6 +1538,7 @@ function SmartShelfApp() {
      =================================================== */
 
   return (
+
     <div className="app-layout">
 
 
@@ -1589,7 +1547,6 @@ function SmartShelfApp() {
           ============================================= */}
 
       <Sidebar
-
         sidebarOpen={
           sidebarOpen
         }
@@ -1605,7 +1562,6 @@ function SmartShelfApp() {
         onGenerateReport={
           generateReport
         }
-
       />
 
 
@@ -1627,7 +1583,6 @@ function SmartShelfApp() {
             =========================================== */}
 
         <Navbar
-
           sidebarOpen={
             sidebarOpen
           }
@@ -1651,7 +1606,6 @@ function SmartShelfApp() {
           setSearchTerm={
             setSearchTerm
           }
-
         />
 
 
@@ -1671,6 +1625,7 @@ function SmartShelfApp() {
             <Route
               path="/"
               element={
+
                 <Dashboard
 
                   products={
@@ -1686,6 +1641,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1697,6 +1653,7 @@ function SmartShelfApp() {
             <Route
               path="/products"
               element={
+
                 <Products
 
                   products={
@@ -1708,6 +1665,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1719,6 +1677,7 @@ function SmartShelfApp() {
             <Route
               path="/add-product"
               element={
+
                 <AddProduct
 
                   onAddProduct={
@@ -1726,6 +1685,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1737,6 +1697,7 @@ function SmartShelfApp() {
             <Route
               path="/low-stock"
               element={
+
                 <LowStock
 
                   products={
@@ -1752,6 +1713,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1763,6 +1725,7 @@ function SmartShelfApp() {
             <Route
               path="/orders"
               element={
+
                 <Orders
 
                   products={
@@ -1778,6 +1741,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1789,6 +1753,7 @@ function SmartShelfApp() {
             <Route
               path="/analytics"
               element={
+
                 <Analytics
 
                   products={
@@ -1800,6 +1765,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1811,6 +1777,7 @@ function SmartShelfApp() {
             <Route
               path="/notifications"
               element={
+
                 <Notifications
 
                   activities={
@@ -1822,6 +1789,7 @@ function SmartShelfApp() {
                   }
 
                 />
+
               }
             />
 
@@ -1847,26 +1815,32 @@ function SmartShelfApp() {
       </div>
 
     </div>
+
   );
+
 }
 
 
 /* =====================================================
    ROOT APP
 
-   BrowserRouter stays mounted permanently.
-   This is important for the logout URL fix.
+   BrowserRouter is ALWAYS mounted.
+
+   This is the important logout fix.
    ===================================================== */
 
 function App() {
 
   return (
+
     <BrowserRouter>
 
       <SmartShelfApp />
 
     </BrowserRouter>
+
   );
+
 }
 
 

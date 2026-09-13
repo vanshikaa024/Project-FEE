@@ -1,132 +1,171 @@
+import React from "react";
 import {
   AlertTriangle,
   Bell,
   CheckCircle2,
   Package,
-  TrendingDown,
 } from "lucide-react";
 
 function Notifications({
   activities = [],
   products = [],
 }) {
-  const safeActivities = Array.isArray(activities)
-    ? activities
-    : [];
-
   const safeProducts = Array.isArray(products)
     ? products
     : [];
 
-  // --------------------------------------------------
-  // STOCK HELPERS
-  // --------------------------------------------------
+  const safeActivities = Array.isArray(activities)
+    ? activities
+    : [];
 
-  const getStock = (product) => {
-    const stock = Number(product?.stock);
+  /* =====================================================
+     STOCK ALERTS
+     ===================================================== */
 
-    return Number.isFinite(stock) ? stock : 0;
-  };
+  const stockAlerts = safeProducts
+    .filter((product) => {
+      const stock = Number(product?.stock || 0);
+      const minStock = Number(product?.minStock || 0);
 
-  const getMinStock = (product) => {
-    const minStock = Number(product?.minStock);
-
-    return Number.isFinite(minStock) ? minStock : 0;
-  };
-
-  // --------------------------------------------------
-  // STOCK STATUS
-  // --------------------------------------------------
-
-  const getStockStatus = (product) => {
-    const stock = getStock(product);
-    const minStock = getMinStock(product);
-
-    // 0 = OUT OF STOCK
-    if (stock === 0) {
-      return "out";
-    }
-
-    // Greater than 0 but at/below minimum = LOW STOCK
-    if (stock <= minStock) {
-      return "low";
-    }
-
-    // Above minimum = IN STOCK
-    return "in";
-  };
-
-  // --------------------------------------------------
-  // LOW + OUT OF STOCK PRODUCTS
-  // --------------------------------------------------
-
-  const attentionProducts = safeProducts.filter((product) => {
-    const status = getStockStatus(product);
-
-    return status === "low" || status === "out";
-  });
-
-  // --------------------------------------------------
-  // SYSTEM STOCK ALERTS
-  // --------------------------------------------------
-
-  const systemAlerts = attentionProducts
-    .slice()
-    .sort((a, b) => {
-      const statusA = getStockStatus(a);
-      const statusB = getStockStatus(b);
-
-      // OUT OF STOCK first
-      if (statusA === "out" && statusB !== "out") {
-        return -1;
-      }
-
-      if (statusB === "out" && statusA !== "out") {
-        return 1;
-      }
-
-      // Then lowest stock first
-      return getStock(a) - getStock(b);
+      return stock > 0 && stock < minStock;
     })
-    .slice(0, 5)
-    .map((product) => {
-      const stock = getStock(product);
-      const minStock = getMinStock(product);
-      const status = getStockStatus(product);
+    .sort((a, b) => {
+      const stockA = Number(a?.stock || 0);
+      const stockB = Number(b?.stock || 0);
 
-      const isOutOfStock = status === "out";
-
-      return {
-        id: `stock-${product.id}`,
-
-        type: isOutOfStock
-          ? "critical"
-          : "warning",
-
-        title: isOutOfStock
-          ? `${product.name} is out of stock`
-          : `${product.name} is below minimum stock`,
-
-        message: isOutOfStock
-          ? `Available: 0 units · Minimum: ${minStock} units`
-          : `Available: ${stock} units · Minimum: ${minStock} units`,
-
-        time: "Current inventory",
-      };
+      return stockA - stockB;
     });
 
+  /* =====================================================
+     REMOVE LOGIN ACTIVITIES
+     ===================================================== */
+
+  const filteredActivities = safeActivities.filter(
+    (activity) => {
+      const message = String(
+        activity?.message || ""
+      ).toLowerCase();
+
+      return (
+        !message.includes(
+          "signed in to smartshelf"
+        ) &&
+        !message.includes(
+          "logged into smartshelf"
+        ) &&
+        !message.includes(
+          "logged in to smartshelf"
+        )
+      );
+    }
+  );
+
+  /* =====================================================
+     ACTIVITY DATE
+     ===================================================== */
+
+  const getActivityDate = (activity) => {
+    if (activity?.timestamp) {
+      const date = new Date(
+        activity.timestamp
+      );
+
+      if (!Number.isNaN(date.getTime())) {
+        return date;
+      }
+    }
+
+    if (activity?.createdAt) {
+      const date = new Date(
+        activity.createdAt
+      );
+
+      if (!Number.isNaN(date.getTime())) {
+        return date;
+      }
+    }
+
+    if (activity?.time) {
+      const date = new Date(
+        activity.time
+      );
+
+      if (!Number.isNaN(date.getTime())) {
+        return date;
+      }
+    }
+
+    return new Date(0);
+  };
+
+  /* =====================================================
+     FORMAT ACTIVITY DATE
+     ===================================================== */
+
+  const formatActivityDate = (activity) => {
+    const date = getActivityDate(activity);
+
+    if (date.getTime() === 0) {
+      return "";
+    }
+
+    return date.toLocaleDateString(
+      "en-IN",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }
+    );
+  };
+
+  /* =====================================================
+     LAST 20 ACTIVITIES
+     ===================================================== */
+
+  const recentActivities =
+    filteredActivities
+      .slice()
+      .sort((a, b) => {
+        return (
+          getActivityDate(b).getTime() -
+          getActivityDate(a).getTime()
+        );
+      })
+      .slice(0, 20);
+
+  /* =====================================================
+     ACTIVITY ICON
+     ===================================================== */
+
+  const getActivityIcon = (type) => {
+    if (
+      type === "warning" ||
+      type === "low-stock" ||
+      type === "danger"
+    ) {
+      return <AlertTriangle size={18} />;
+    }
+
+    if (type === "success") {
+      return <CheckCircle2 size={18} />;
+    }
+
+    return <Package size={18} />;
+  };
+
   return (
-    <div className="notifications-page">
+    <div className="page notifications-page">
 
-      {/* ==================================================
+      {/* =================================================
           PAGE HEADER
-      ================================================== */}
+          ================================================= */}
 
-      <div className="page-header">
+      <div className="notifications-page-header">
         <div>
-          <p className="eyebrow">
+          <span className="notifications-eyebrow">
             INVENTORY ALERTS
-          </p>
+          </span>
 
           <h1>
             Notifications & Activity
@@ -139,177 +178,181 @@ function Notifications({
         </div>
       </div>
 
-      {/* ==================================================
+
+      {/* =================================================
           STOCK ALERTS
-      ================================================== */}
+          ================================================= */}
 
-      {systemAlerts.length > 0 && (
-        <div
-          className="analytics-panel"
-          style={{
-            marginBottom: 18,
-          }}
-        >
-          <div className="panel-heading">
-            <div>
-              <h2>
-                Stock Alerts
-              </h2>
+      <section className="notifications-panel">
 
-              <p>
-                These products need attention.
-              </p>
-            </div>
-
-            <AlertTriangle size={20} />
-          </div>
-
-          <div className="notification-list">
-            {systemAlerts.map((alert) => (
-              <div
-                className="notification-row"
-                key={alert.id}
-              >
-
-                {/* ICON */}
-                <div className="notification-row-icon">
-                  <AlertTriangle size={18} />
-                </div>
-
-                {/* CONTENT */}
-                <div className="notification-content">
-                  <strong>
-                    {alert.title}
-                  </strong>
-
-                  <p>
-                    {alert.message}
-                  </p>
-                </div>
-
-                {/* TIME */}
-                <span className="notification-time">
-                  {alert.time}
-                </span>
-
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ==================================================
-          NO STOCK ALERTS
-      ================================================== */}
-
-      {systemAlerts.length === 0 && (
-        <div
-          className="analytics-panel"
-          style={{
-            marginBottom: 18,
-          }}
-        >
-          <div className="panel-heading">
-            <div>
-              <h2>
-                Stock Alerts
-              </h2>
-
-              <p>
-                All products are currently above
-                their minimum stock level.
-              </p>
-            </div>
-
-            <CheckCircle2 size={20} />
-          </div>
-        </div>
-      )}
-
-      {/* ==================================================
-          ACTIVITY FEED
-      ================================================== */}
-
-      <div className="analytics-panel">
-
-        <div className="panel-heading">
+        <div className="notifications-panel-header">
           <div>
-            <h2>
-              Activity Feed
-            </h2>
+            <h2>Stock Alerts</h2>
 
             <p>
-              Sales, restocks, products and reports.
+              These products need attention.
             </p>
           </div>
 
-          <Bell size={20} />
+          <AlertTriangle size={20} />
         </div>
 
-        {safeActivities.length ? (
-          <div className="notification-list">
 
-            {safeActivities.map((item) => (
-              <div
-                className="notification-row"
-                key={item.id}
-              >
+        {stockAlerts.length === 0 ? (
+          <div className="notification-empty">
+            <CheckCircle2 size={28} />
 
-                {/* ACTIVITY ICON */}
-                <div className="notification-row-icon">
+            <strong>
+              Inventory is healthy
+            </strong>
 
-                  {item.type === "warning" ? (
-                    <AlertTriangle size={18} />
-                  ) : item.type === "success" ? (
-                    <CheckCircle2 size={18} />
-                  ) : item.type === "danger" ? (
-                    <TrendingDown size={18} />
-                  ) : (
-                    <Package size={18} />
-                  )}
-
-                </div>
-
-                {/* ACTIVITY CONTENT */}
-                <div className="notification-content">
-
-                  <strong>
-                    {item.message}
-                  </strong>
-
-                  <p>
-                    SmartShelf inventory event
-                  </p>
-
-                </div>
-
-                {/* ACTIVITY TIME */}
-                <span className="notification-time">
-                  {item.time}
-                </span>
-
-              </div>
-            ))}
-
+            <span>
+              No products are below their
+              minimum stock level.
+            </span>
           </div>
         ) : (
-          <div className="empty-state">
+          <div className="stock-alert-list">
 
-            <Bell size={28} />
+            {stockAlerts.map((product) => {
+              const stock = Number(
+                product?.stock || 0
+              );
 
-            <h3>
-              No activity yet
-            </h3>
+              const minStock = Number(
+                product?.minStock || 0
+              );
 
-            <p>
-              Inventory events will appear here
-              as you work.
-            </p>
+              return (
+                <div
+                  className="stock-alert-row"
+                  key={product.id}
+                >
+
+                  <div className="stock-alert-icon">
+                    <AlertTriangle size={17} />
+                  </div>
+
+
+                  <div className="stock-alert-content">
+
+                    <strong>
+                      {product.name} is below minimum stock
+                    </strong>
+
+                    <span>
+                      Available: {stock} units ·
+                      Minimum: {minStock} units
+                    </span>
+
+                  </div>
+
+
+                  <span className="stock-alert-label">
+                    Current inventory
+                  </span>
+
+                </div>
+              );
+            })}
 
           </div>
         )}
 
-      </div>
+      </section>
+
+
+      {/* =================================================
+          ACTIVITY FEED
+          ================================================= */}
+
+      <section className="notifications-panel activity-feed-panel">
+
+        <div className="notifications-panel-header">
+
+          <div>
+            <h2>Activity Feed</h2>
+
+            <p>
+              Showing you {recentActivities.length} most recent
+              {recentActivities.length === 1
+                ? " activity."
+                : " activities."}
+            </p>
+          </div>
+
+          <Bell size={20} />
+
+        </div>
+
+
+        {recentActivities.length === 0 ? (
+          <div className="notification-empty">
+
+            <Bell size={28} />
+
+            <strong>
+              No recent activity
+            </strong>
+
+            <span>
+              New inventory activity will appear here.
+            </span>
+
+          </div>
+        ) : (
+
+          <div className="activity-feed-list">
+
+            {recentActivities.map(
+              (activity) => (
+
+                <div
+                  className="activity-feed-row"
+                  key={activity.id}
+                >
+
+                  <div
+                    className={`activity-feed-icon ${
+                      activity.type || "info"
+                    }`}
+                  >
+                    {getActivityIcon(
+                      activity.type
+                    )}
+                  </div>
+
+
+                  <div className="activity-feed-content">
+
+                    <strong>
+                      {activity.message}
+                    </strong>
+
+                    <span>
+                      SmartShelf inventory event
+                    </span>
+
+                  </div>
+
+
+                  <time>
+                    {formatActivityDate(
+                      activity
+                    )}
+                  </time>
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
+        )}
+
+      </section>
+
     </div>
   );
 }

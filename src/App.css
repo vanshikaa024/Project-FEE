@@ -2391,60 +2391,393 @@ a {
    NOTIFICATIONS
    ========================================================= */
 
+/* =========================================================
+   NOTIFICATIONS & ACTIVITY
+   ========================================================= */
+
 .notifications-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.notifications-page-header {
+  margin-bottom: 25px;
+}
+
+.notifications-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+
+  color: var(--orange);
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.notifications-page-header h1 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 28px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.notifications-page-header p {
+  margin-top: 7px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   MAIN PANELS
+   ========================================================= */
+
+.notifications-panel {
+  width: 100%;
+  margin-bottom: 18px;
+
+  overflow: hidden;
+
+  border: 1px solid #e2e6ed;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 20px rgba(23, 27, 61, 0.035);
+}
+
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.notifications-panel-header {
+  min-height: 60px;
+
+  padding: 14px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.notifications-panel-header > div {
+  min-width: 0;
+}
+
+.notifications-panel-header h2 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.notifications-panel-header p {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.notifications-panel-header > svg {
+  flex-shrink: 0;
+
+  color: var(--text);
+}
+
+
+/* =========================================================
+   STOCK ALERT LIST
+   ========================================================= */
+
+.stock-alert-list {
   width: 100%;
 }
 
-.notification-list {
-  padding: 5px 0;
-}
+.stock-alert-row {
+  min-height: 66px;
 
-.notification-row {
-  min-height: 70px;
   padding: 13px 20px;
+
   display: flex;
   align-items: center;
+
   gap: 12px;
-  border-bottom: 1px solid #f0f2f5;
+
+  border-bottom: 1px solid #edf0f4;
 }
 
-.notification-row:last-child {
-  border-bottom: 0;
+.stock-alert-row:last-child {
+  border-bottom: none;
 }
 
-.notification-row-icon {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 9px;
-  background: var(--orange-soft);
+
+/* =========================================================
+   STOCK ALERT ICON
+   ========================================================= */
+
+.stock-alert-icon {
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #fff1e8;
+
   color: var(--orange);
 }
 
-.notification-content {
+
+/* =========================================================
+   STOCK ALERT CONTENT
+   ========================================================= */
+
+.stock-alert-content {
+  min-width: 0;
   flex: 1;
 }
 
-.notification-content strong,
-.notification-content p {
+.stock-alert-content strong {
   display: block;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.notification-content strong {
-  font-size: 9px;
-}
+.stock-alert-content span {
+  display: block;
 
-.notification-content p {
-  margin: 3px 0 0;
+  margin-top: 3px;
+
   color: var(--muted);
+
   font-size: 8px;
 }
 
-.notification-time {
+
+/* =========================================================
+   CURRENT INVENTORY LABEL
+   ========================================================= */
+
+.stock-alert-label {
+  flex-shrink: 0;
+
+  color: #969daa;
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ACTIVITY FEED
+   ========================================================= */
+
+.activity-feed-panel {
+  margin-top: 18px;
+}
+
+.activity-feed-list {
+  width: 100%;
+}
+
+.activity-feed-row {
+  min-height: 66px;
+
+  padding: 13px 20px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+.activity-feed-row:last-child {
+  border-bottom: none;
+}
+
+
+/* =========================================================
+   ACTIVITY ICON
+   ========================================================= */
+
+.activity-feed-icon {
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #fff1e8;
+
+  color: var(--orange);
+}
+
+.activity-feed-icon.success {
+  color: var(--orange);
+}
+
+.activity-feed-icon.warning,
+.activity-feed-icon.low-stock,
+.activity-feed-icon.danger {
+  color: var(--orange);
+}
+
+
+/* =========================================================
+   ACTIVITY CONTENT
+   ========================================================= */
+
+.activity-feed-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.activity-feed-content strong {
+  display: block;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-feed-content span {
+  display: block;
+
+  margin-top: 3px;
+
   color: var(--muted);
-  font-size: 7px;
+
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   ACTIVITY DATE
+   ========================================================= */
+
+.activity-feed-row time {
+  flex-shrink: 0;
+
+  color: #969daa;
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.notification-empty {
+  min-height: 150px;
+
+  padding: 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  color: #9ba1ab;
+}
+
+.notification-empty svg {
+  margin-bottom: 9px;
+
+  color: #c4c8d0;
+}
+
+.notification-empty strong {
+  color: #555c68;
+
+  font-size: 12px;
+}
+
+.notification-empty span {
+  margin-top: 5px;
+
+  color: #9298a3;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .notifications-page-header h1 {
+    font-size: 23px;
+  }
+
+  .stock-alert-row,
+  .activity-feed-row {
+    padding: 12px 14px;
+  }
+
+  .stock-alert-label {
+    display: none;
+  }
+
+  .activity-feed-row time {
+    font-size: 7px;
+  }
+
 }
 
 /* =========================================================

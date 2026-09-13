@@ -48,7 +48,7 @@ function Products({
         <div>
 
           <h1>
-            Product Catalogue
+            Products
           </h1>
 
           <p>

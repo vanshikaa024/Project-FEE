@@ -27,7 +27,7 @@ function Sidebar({
     },
     {
       path: "/products",
-      label: "Product Catalogue",
+      label: "Products",
       icon: Package,
     },
     {
