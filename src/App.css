@@ -7985,3 +7985,197 @@ html[data-theme="dark"] body {
 .app-layout[data-theme="dark"] .products-page .products-table tbody tr:hover {
   background: #18283d;
 }
+
+
+/* Products filter dropdown fix */
+
+.app-layout .products-select {
+  background: #ffffff;
+  border: 1px solid #d8e1ef;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.app-layout .products-select select {
+  width: 100%;
+  height: 100%;
+  min-height: 44px;
+  background: #ffffff;
+  color: #172033;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  appearance: auto;
+}
+
+.app-layout .products-select select option {
+  background: #ffffff;
+  color: #172033;
+}
+
+.app-layout[data-theme="dark"] .products-select,
+.app-layout[data-theme="dark"] .products-select select {
+  background: #152338;
+  color: #f1f5ff;
+}
+
+.app-layout[data-theme="dark"] .products-select select option {
+  background: #152338;
+  color: #f1f5ff;
+}
+
+/* SMARTSHELF PRODUCTS PAGE — DARK MODE */
+
+.app-layout[data-theme="dark"] .products-page {
+  background: var(--page-bg, #0b1423);
+  color: #f1f5ff;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-heading h1,
+.app-layout[data-theme="dark"] .products-page .products-results-info h2,
+.app-layout[data-theme="dark"] .products-page .products-filter-heading h2 {
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-heading p,
+.app-layout[data-theme="dark"] .products-page .products-results-info p,
+.app-layout[data-theme="dark"] .products-page .products-filter-heading p {
+  color: #a4b6d2 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-overview-card,
+.app-layout[data-theme="dark"] .products-page .products-filter-card {
+  background: #111e30 !important;
+  color: #f1f5ff !important;
+  border-color: #263850 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-overview-card span {
+  color: #a4b6d2 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-overview-card strong {
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-search,
+.app-layout[data-theme="dark"] .products-page .products-select {
+  background: #152338 !important;
+  border-color: #34465f !important;
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-search input,
+.app-layout[data-theme="dark"] .products-page .products-select select {
+  background: #152338 !important;
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-search input::placeholder {
+  color: #a4b6d2 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-select select option {
+  background: #152338 !important;
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-results-label {
+  background: #152338 !important;
+  color: #cbd5e1 !important;
+  border-color: #34465f !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-table-card {
+  background: #111e30 !important;
+  border-color: #263850 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-table {
+  background: #111e30 !important;
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-table thead,
+.app-layout[data-theme="dark"] .products-page .products-table th {
+  background: #1a2a40 !important;
+  color: #dbe7f8 !important;
+  border-color: #34465f !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-table tbody tr,
+.app-layout[data-theme="dark"] .products-page .products-table tbody tr td {
+  background: #111e30 !important;
+  color: #f1f5ff !important;
+  border-color: #34465f !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-table tbody tr:hover,
+.app-layout[data-theme="dark"] .products-page .products-table tbody tr:hover td {
+  background: #1a2a40 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-name,
+.app-layout[data-theme="dark"] .products-page .products-product-name,
+.app-layout[data-theme="dark"] .products-page .products-price,
+.app-layout[data-theme="dark"] .products-page .products-stock-number,
+.app-layout[data-theme="dark"] .products-page .products-sold {
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-id {
+  color: #a4b6d2 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-category {
+  background: #1b2b42 !important;
+  border-color: #405574 !important;
+  color: #cbd5e1 !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-image {
+  background: #1a2a40 !important;
+  border-color: #34465f !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-action-btn {
+  background: #152338 !important;
+  border-color: #34465f !important;
+  color: #f1f5ff !important;
+}
+
+.app-layout[data-theme="dark"] .products-page .products-action-btn.delete {
+  background: #152338 !important;
+  color: #ff6b75 !important;
+  border-color: #34465f !important;
+}
+
+/* SMARTSHELF PRODUCTS PAGE — LIGHT MODE */
+
+.app-layout[data-theme="light"] .products-page {
+  background: #f4f7fc;
+  color: #172033;
+}
+
+.app-layout[data-theme="light"] .products-page .products-table tbody tr,
+.app-layout[data-theme="light"] .products-page .products-table tbody tr td {
+  background: #ffffff;
+  color: #172033 !important;
+}
+
+.app-layout[data-theme="light"] .products-page .products-table tbody tr:hover,
+.app-layout[data-theme="light"] .products-page .products-table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.app-layout[data-theme="light"] .products-page .products-name,
+.app-layout[data-theme="light"] .products-page .products-product-name,
+.app-layout[data-theme="light"] .products-page .products-price,
+.app-layout[data-theme="light"] .products-page .products-stock-number,
+.app-layout[data-theme="light"] .products-page .products-sold {
+  color: #172033 !important;
+}
+
+.app-layout[data-theme="light"] .products-page .products-id {
+  color: #64748b !important;
+}
