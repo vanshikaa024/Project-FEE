@@ -4682,129 +4682,7 @@ a {
 
 }
 
-/* =========================================================
-   SMARTSHELF THEME SYSTEM
-   Light mode keeps the existing design. Dark mode changes
-   the shared surfaces, text, borders, forms and tables.
-   ========================================================= */
-
-.app-layout[data-theme="dark"] {
-  --bg: #111827;
-  --card: #1b2433;
-  --border: #303b4d;
-  --text: #e7edf7;
-  --muted: #a0aec0;
-  --orange-soft: #3b2b20;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-  color: var(--text);
-  background: var(--bg);
-}
-
-html[data-theme="dark"],
-html[data-theme="dark"] body {
-  background: #111827;
-  color: #e7edf7;
-}
-
-.app-layout[data-theme="dark"] .navbar,
-.app-layout[data-theme="dark"] .health-card,
-.app-layout[data-theme="dark"] .stat-card,
-.app-layout[data-theme="dark"] .analytics-card,
-.app-layout[data-theme="dark"] .dashboard-panel,
-.app-layout[data-theme="dark"] .analytics-panel,
-.app-layout[data-theme="dark"] .panel,
-.app-layout[data-theme="dark"] .panel-card,
-.app-layout[data-theme="dark"] .content-card,
-.app-layout[data-theme="dark"] .table-container,
-.app-layout[data-theme="dark"] .products-table-wrapper,
-.app-layout[data-theme="dark"] .form-card,
-.app-layout[data-theme="dark"] .modal-content,
-.app-layout[data-theme="dark"] .search-dropdown,
-.app-layout[data-theme="dark"] .search-result,
-.app-layout[data-theme="dark"] .view-all-results {
-  background: var(--card) !important;
-  color: var(--text);
-  border-color: var(--border);
-}
-
-.app-layout[data-theme="dark"] .page-content,
-.app-layout[data-theme="dark"] .main-area,
-.app-layout[data-theme="dark"] .dashboard-page,
-.app-layout[data-theme="dark"] .page,
-.app-layout[data-theme="dark"] .orders-page,
-.app-layout[data-theme="dark"] .analytics-page,
-.app-layout[data-theme="dark"] .notifications-page {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.app-layout[data-theme="dark"] h1,
-.app-layout[data-theme="dark"] h2,
-.app-layout[data-theme="dark"] h3,
-.app-layout[data-theme="dark"] h4,
-.app-layout[data-theme="dark"] strong,
-.app-layout[data-theme="dark"] b,
-.app-layout[data-theme="dark"] label,
-.app-layout[data-theme="dark"] .navbar-user,
-.app-layout[data-theme="dark"] .stat-card > span,
-.app-layout[data-theme="dark"] .stat-card > strong,
-.app-layout[data-theme="dark"] .stat-card > small,
-.app-layout[data-theme="dark"] .analytics-card > span,
-.app-layout[data-theme="dark"] .analytics-card > strong,
-.app-layout[data-theme="dark"] .analytics-card > small {
-  color: var(--text);
-}
-
-.app-layout[data-theme="dark"] p,
-.app-layout[data-theme="dark"] small,
-.app-layout[data-theme="dark"] td,
-.app-layout[data-theme="dark"] th,
-.app-layout[data-theme="dark"] .page-subtitle,
-.app-layout[data-theme="dark"] .page-header p:not(.eyebrow),
-.app-layout[data-theme="dark"] .decision-row span,
-.app-layout[data-theme="dark"] .dashboard-list-row span {
-  color: var(--muted);
-}
-
-.app-layout[data-theme="dark"] input,
-.app-layout[data-theme="dark"] select,
-.app-layout[data-theme="dark"] textarea,
-.app-layout[data-theme="dark"] .navbar-search {
-  color: var(--text);
-  background: #151e2b;
-  border-color: var(--border);
-}
-
-.app-layout[data-theme="dark"] input::placeholder,
-.app-layout[data-theme="dark"] textarea::placeholder {
-  color: #8c9ab0;
-}
-
-.app-layout[data-theme="dark"] table,
-.app-layout[data-theme="dark"] thead,
-.app-layout[data-theme="dark"] tbody,
-.app-layout[data-theme="dark"] tr,
-.app-layout[data-theme="dark"] td,
-.app-layout[data-theme="dark"] th {
-  border-color: var(--border);
-}
-
-.app-layout[data-theme="dark"] th {
-  background: #202b3b;
-  color: #cbd5e1;
-}
-
-.app-layout[data-theme="dark"] tr:nth-child(even),
-.app-layout[data-theme="dark"] .search-result:hover,
-.app-layout[data-theme="dark"] .menu-btn:hover,
-.app-layout[data-theme="dark"] .notification-icon:hover {
-  background: #202b3b;
-}
-
-.app-layout[data-theme="dark"] .menu-btn,
-.app-layout[data-theme="dark"] .notification-icon,
-.app-layout[data-theme="dark"] .navbar-user-icon,
-.app-layout[data-theme="dark"] .theme-toggle-btn {
+.theme-toggle-btn {
   background: #1b2433;
   color: var(--text);
   border-color: var(--border);
@@ -4876,199 +4754,42 @@ html[data-theme="dark"] body {
 }
 
 /* =========================================================
-   DARK THEME VISIBILITY FIXES
-   Keep cards dark and make muted text readable in dark mode.
+   SMARTSHELF DARK MODE  (clean, complete)
+   Activated by  <div class="app-layout" data-theme="dark">
+   Every light surface, border and dark-text colour used in
+   this file is re-mapped below, so nothing stays light.
    ========================================================= */
-.app-layout[data-theme="dark"] .product-card,
-.app-layout[data-theme="dark"] .ss-card,
-.app-layout[data-theme="dark"] .ss-kpi-card,
-.app-layout[data-theme="dark"] .ss-health-card,
-.app-layout[data-theme="dark"] .ss-bottom-card,
-.app-layout[data-theme="dark"] .stock-card,
-.app-layout[data-theme="dark"] .stock-info-card,
-.app-layout[data-theme="dark"] .inventory-card,
-.app-layout[data-theme="dark"] .order-card,
-.app-layout[data-theme="dark"] .notification-card,
-.app-layout[data-theme="dark"] .activity-feed,
-.app-layout[data-theme="dark"] .activity-feed-row,
-.app-layout[data-theme="dark"] .notification-empty,
-.app-layout[data-theme="dark"] .empty-state,
-.app-layout[data-theme="dark"] .empty-state-card,
-.app-layout[data-theme="dark"] .filter-panel,
-.app-layout[data-theme="dark"] .filter-bar,
-.app-layout[data-theme="dark"] .summary-card,
-.app-layout[data-theme="dark"] .summary-box,
-.app-layout[data-theme="dark"] .info-card,
-.app-layout[data-theme="dark"] .chart-card,
-.app-layout[data-theme="dark"] .chart-container,
-.app-layout[data-theme="dark"] .modal,
-.app-layout[data-theme="dark"] .modal-body,
-.app-layout[data-theme="dark"] .dropdown-menu,
-.app-layout[data-theme="dark"] .notification-dropdown,
-.app-layout[data-theme="dark"] .search-box,
-.app-layout[data-theme="dark"] .pagination button,
-.app-layout[data-theme="dark"] .product-form,
-.app-layout[data-theme="dark"] .form-section,
-.app-layout[data-theme="dark"] .table-wrapper,
-.app-layout[data-theme="dark"] .table-responsive {
-  background-color: var(--card) !important;
-  color: var(--text) !important;
-  border-color: var(--border) !important;
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  background: #0d1420;
 }
 
-.app-layout[data-theme="dark"] .ss-card-title-wrap p,
-.app-layout[data-theme="dark"] .ss-card p,
-.app-layout[data-theme="dark"] .ss-card span,
-.app-layout[data-theme="dark"] .ss-health-card small,
-.app-layout[data-theme="dark"] .ss-kpi-card small,
-.app-layout[data-theme="dark"] .ss-legend-list span,
-.app-layout[data-theme="dark"] .ss-stock-bar-item > span,
-.app-layout[data-theme="dark"] .ss-attention-row span,
-.app-layout[data-theme="dark"] .ss-order-row time,
-.app-layout[data-theme="dark"] .ss-activity-row span,
-.app-layout[data-theme="dark"] .ss-empty,
-.app-layout[data-theme="dark"] .stock-section-heading p,
-.app-layout[data-theme="dark"] .stock-info-row,
-.app-layout[data-theme="dark"] .stock-card p,
-.app-layout[data-theme="dark"] .product-card p,
-.app-layout[data-theme="dark"] .product-card span,
-.app-layout[data-theme="dark"] .activity-feed-row span,
-.app-layout[data-theme="dark"] .notification-empty span,
-.app-layout[data-theme="dark"] .form-hint,
-.app-layout[data-theme="dark"] .helper-text,
-.app-layout[data-theme="dark"] .muted,
-.app-layout[data-theme="dark"] .text-muted,
-.app-layout[data-theme="dark"] .secondary-text,
-.app-layout[data-theme="dark"] .description,
-.app-layout[data-theme="dark"] .subtitle {
-  color: #c0cada !important;
-}
-
-.app-layout[data-theme="dark"] .ss-card h1,
-.app-layout[data-theme="dark"] .ss-card h2,
-.app-layout[data-theme="dark"] .ss-card h3,
-.app-layout[data-theme="dark"] .ss-card strong,
-.app-layout[data-theme="dark"] .ss-kpi-card strong,
-.app-layout[data-theme="dark"] .ss-health-card strong,
-.app-layout[data-theme="dark"] .ss-order-row strong,
-.app-layout[data-theme="dark"] .ss-activity-row strong,
-.app-layout[data-theme="dark"] .product-card h2,
-.app-layout[data-theme="dark"] .product-card h3,
-.app-layout[data-theme="dark"] .product-card strong,
-.app-layout[data-theme="dark"] .stock-card h2,
-.app-layout[data-theme="dark"] .stock-card h3,
-.app-layout[data-theme="dark"] .stock-card strong,
-.app-layout[data-theme="dark"] .notification-empty strong {
-  color: #f1f5fb !important;
-}
-
-.app-layout[data-theme="dark"] .ss-card-header,
-.app-layout[data-theme="dark"] .ss-card-header h2,
-.app-layout[data-theme="dark"] .ss-card-title-wrap,
-.app-layout[data-theme="dark"] .ss-legend-list > div,
-.app-layout[data-theme="dark"] .ss-attention-row,
-.app-layout[data-theme="dark"] .ss-ranking-row,
-.app-layout[data-theme="dark"] .ss-category-row,
-.app-layout[data-theme="dark"] .ss-order-row,
-.app-layout[data-theme="dark"] .ss-activity-row,
-.app-layout[data-theme="dark"] .activity-feed-row,
-.app-layout[data-theme="dark"] .stock-info-row,
-.app-layout[data-theme="dark"] .stock-card-footer {
-  border-color: var(--border) !important;
-}
-
-.app-layout[data-theme="dark"] .ss-section-icon,
-.app-layout[data-theme="dark"] .product-icon,
-.app-layout[data-theme="dark"] .stock-icon {
-  background-color: #293548;
-  color: #ff9b4a;
-}
-
-.app-layout[data-theme="dark"] input,
-.app-layout[data-theme="dark"] select,
-.app-layout[data-theme="dark"] textarea {
-  background-color: #151e2b !important;
-  color: #f1f5fb !important;
-  border-color: #3a465a !important;
-}
-
-.app-layout[data-theme="dark"] input::placeholder,
-.app-layout[data-theme="dark"] textarea::placeholder {
-  color: #aab6c8 !important;
-  opacity: 1;
-}
-
-
-
-/* FINAL DARK THEME OVERRIDE — visibility repair across SmartShelf pages */
-.app-layout[data-theme="dark"] {
+html[data-theme="dark"] body {
   background: #0d1420 !important;
   color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] {
+  --bg: #0d1420;
+  --card: #1b2636;
+  --border: #344257;
+  --text: #e8eef7;
+  --muted: #a9b6c9;
+  --orange-soft: #3a2a1f;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   color-scheme: dark;
+  background: var(--bg) !important;
+  color: var(--text);
 }
 
-.app-layout[data-theme="dark"] .app-content,
-.app-layout[data-theme="dark"] .main,
-.app-layout[data-theme="dark"] .main-content,
-.app-layout[data-theme="dark"] .content,
-.app-layout[data-theme="dark"] .content-area,
-.app-layout[data-theme="dark"] .page-content,
-.app-layout[data-theme="dark"] .page-container,
-.app-layout[data-theme="dark"] .dashboard-content,
-.app-layout[data-theme="dark"] .products-page,
-.app-layout[data-theme="dark"] .inventory-page,
-.app-layout[data-theme="dark"] .orders-page,
-.app-layout[data-theme="dark"] .analytics-page,
-.app-layout[data-theme="dark"] .low-stock-page,
-.app-layout[data-theme="dark"] .sales-page,
-.app-layout[data-theme="dark"] .card,
-.app-layout[data-theme="dark"] .panel,
-.app-layout[data-theme="dark"] .section-card,
-.app-layout[data-theme="dark"] .stat-card,
-.app-layout[data-theme="dark"] .metric-card,
-.app-layout[data-theme="dark"] .form-card,
-.app-layout[data-theme="dark"] .table-card,
-.app-layout[data-theme="dark"] .modal-content,
-.app-layout[data-theme="dark"] .dropdown-menu,
-.app-layout[data-theme="dark"] .notification-panel,
-.app-layout[data-theme="dark"] .sales-form,
-.app-layout[data-theme="dark"] .sale-form,
-.app-layout[data-theme="dark"] .order-history,
-.app-layout[data-theme="dark"] .sales-card,
-.app-layout[data-theme="dark"] .orders-table-container,
-.app-layout[data-theme="dark"] .table-wrapper,
-.app-layout[data-theme="dark"] .table-responsive,
-.app-layout[data-theme="dark"] .ss-card,
-.app-layout[data-theme="dark"] .ss-kpi-card,
-.app-layout[data-theme="dark"] .ss-health-card,
-.app-layout[data-theme="dark"] .ss-chart-card,
-.app-layout[data-theme="dark"] .ss-product-card,
-.app-layout[data-theme="dark"] .product-card,
-.app-layout[data-theme="dark"] .stock-card,
-.app-layout[data-theme="dark"] .notification-card,
-.app-layout[data-theme="dark"] .activity-card,
-.app-layout[data-theme="dark"] .analytics-card,
-.app-layout[data-theme="dark"] .inventory-card,
-.app-layout[data-theme="dark"] .order-card,
-.app-layout[data-theme="dark"] .stat-box {
-  background-color: #1b2636 !important;
-  color: #e8eef7 !important;
-  border-color: #344257 !important;
-}
+/* ---------- Generic fallbacks (cover pages/components whose
+   classes are not defined in this file) ---------- */
 
-.app-layout[data-theme="dark"] [style*="background: white"],
-.app-layout[data-theme="dark"] [style*="background:white"],
-.app-layout[data-theme="dark"] [style*="background: #fff"],
-.app-layout[data-theme="dark"] [style*="background:#fff"],
-.app-layout[data-theme="dark"] [style*="background-color: white"],
-.app-layout[data-theme="dark"] [style*="background-color:white"],
-.app-layout[data-theme="dark"] [style*="background-color: #fff"],
-.app-layout[data-theme="dark"] [style*="background-color:#fff"],
-.app-layout[data-theme="dark"] [style*="background: rgb(255, 255, 255)"],
-.app-layout[data-theme="dark"] [style*="background-color: rgb(255, 255, 255)"] {
-  background: #1b2636 !important;
-  color: #e8eef7 !important;
-  border-color: #344257 !important;
+.app-layout[data-theme="dark"] .main-area,
+.app-layout[data-theme="dark"] .page-content {
+  background: var(--bg) !important;
+  color: var(--text);
 }
 
 .app-layout[data-theme="dark"] h1,
@@ -5076,46 +4797,8 @@ html[data-theme="dark"] body {
 .app-layout[data-theme="dark"] h3,
 .app-layout[data-theme="dark"] h4,
 .app-layout[data-theme="dark"] h5,
-.app-layout[data-theme="dark"] h6,
-.app-layout[data-theme="dark"] strong,
-.app-layout[data-theme="dark"] b,
-.app-layout[data-theme="dark"] .title,
-.app-layout[data-theme="dark"] .page-title {
-  color: #f8fafc !important;
-}
-
-.app-layout[data-theme="dark"] p,
-.app-layout[data-theme="dark"] label,
-.app-layout[data-theme="dark"] small,
-.app-layout[data-theme="dark"] span,
-.app-layout[data-theme="dark"] li,
-.app-layout[data-theme="dark"] td,
-.app-layout[data-theme="dark"] th,
-.app-layout[data-theme="dark"] .muted,
-.app-layout[data-theme="dark"] .subtitle,
-.app-layout[data-theme="dark"] .description,
-.app-layout[data-theme="dark"] .helper-text {
-  color: #cbd5e1;
-}
-
-.app-layout[data-theme="dark"] table,
-.app-layout[data-theme="dark"] thead,
-.app-layout[data-theme="dark"] tbody,
-.app-layout[data-theme="dark"] tr,
-.app-layout[data-theme="dark"] td,
-.app-layout[data-theme="dark"] th {
-  background-color: #1b2636 !important;
-  color: #e8eef7 !important;
-  border-color: #344257 !important;
-}
-
-.app-layout[data-theme="dark"] thead th {
-  background-color: #253247 !important;
-  color: #dbe7f7 !important;
-}
-
-.app-layout[data-theme="dark"] tbody tr:nth-child(even) td {
-  background-color: #202d40 !important;
+.app-layout[data-theme="dark"] h6 {
+  color: #f8fafc;
 }
 
 .app-layout[data-theme="dark"] input,
@@ -5126,12 +4809,889 @@ html[data-theme="dark"] body {
   border-color: #46566e !important;
 }
 
-.app-layout[data-theme="dark"] select option {
-  background-color: #111b2a !important;
-  color: #f8fafc !important;
+.app-layout[data-theme="dark"] input::placeholder,
+.app-layout[data-theme="dark"] textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
 }
 
-.app-layout[data-theme="dark"] ::placeholder {
-  color: #aab8ca !important;
-  opacity: 1 !important;
+.app-layout[data-theme="dark"] select option {
+  background-color: #111b2a;
+  color: #f8fafc;
+}
+
+.app-layout[data-theme="dark"] table,
+.app-layout[data-theme="dark"] thead,
+.app-layout[data-theme="dark"] tbody,
+.app-layout[data-theme="dark"] tr,
+.app-layout[data-theme="dark"] td,
+.app-layout[data-theme="dark"] th {
+  background-color: #1b2636;
+  color: #e8eef7;
+  border-color: #344257;
+}
+
+.app-layout[data-theme="dark"] thead th {
+  background-color: #253247;
+  color: #dbe7f7;
+}
+
+.app-layout[data-theme="dark"] .card,
+.app-layout[data-theme="dark"] .panel,
+.app-layout[data-theme="dark"] .modal,
+.app-layout[data-theme="dark"] .modal-content,
+.app-layout[data-theme="dark"] .dropdown-menu,
+.app-layout[data-theme="dark"] .table-wrapper,
+.app-layout[data-theme="dark"] .table-container,
+.app-layout[data-theme="dark"] .form-card,
+.app-layout[data-theme="dark"] .login-card,
+.app-layout[data-theme="dark"] .sales-chart-container,
+.app-layout[data-theme="dark"] .sales-chart-wrapper {
+  background-color: #1b2636 !important;
+  color: #e8eef7;
+  border-color: #344257 !important;
+}
+
+/* charts drawn with SVG */
+.app-layout[data-theme="dark"] svg text {
+  fill: #cbd5e1;
+}
+
+.app-layout[data-theme="dark"] svg line,
+.app-layout[data-theme="dark"] svg .grid line {
+  stroke: #344257;
+}
+
+/* inline white backgrounds written in JSX */
+.app-layout[data-theme="dark"] [style*="background: white"],
+.app-layout[data-theme="dark"] [style*="background:white"],
+.app-layout[data-theme="dark"] [style*="background: #fff"],
+.app-layout[data-theme="dark"] [style*="background:#fff"],
+.app-layout[data-theme="dark"] [style*="background-color: white"],
+.app-layout[data-theme="dark"] [style*="background-color:white"],
+.app-layout[data-theme="dark"] [style*="background-color: #fff"],
+.app-layout[data-theme="dark"] [style*="background-color:#fff"],
+.app-layout[data-theme="dark"] [style*="rgb(255, 255, 255)"] {
+  background: #1b2636 !important;
+  color: #e8eef7 !important;
+  border-color: #344257 !important;
+}
+
+/* ---------- Auto-generated: every class in this file ---------- */
+
+.app-layout[data-theme="dark"] .navbar {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .menu-btn,
+.app-layout[data-theme="dark"] .notification-icon,
+.app-layout[data-theme="dark"] .navbar-user-icon {
+  background: #1b2636 !important;
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .menu-btn:hover,
+.app-layout[data-theme="dark"] .notification-icon:hover {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .navbar-search {
+  border-color: #344257 !important;
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .navbar-search:focus-within {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .navbar-search input::placeholder {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .search-icon {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .search-clear-btn {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .search-dropdown {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .search-result {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .search-result:hover {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .view-all-results {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .panel-heading {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .health-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .health-ring span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .health-card span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .stat-card,
+.app-layout[data-theme="dark"] .analytics-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .stat-card::after,
+.app-layout[data-theme="dark"] .analytics-card::after {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .stat-card > span,
+.app-layout[data-theme="dark"] .analytics-card > span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .stat-card > strong,
+.app-layout[data-theme="dark"] .analytics-card > strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .stat-card > small,
+.app-layout[data-theme="dark"] .analytics-card > small {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .dashboard-panel,
+.app-layout[data-theme="dark"] .analytics-panel {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .snapshot-grid {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .snapshot-main {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .snapshot-main span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .snapshot-main small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .bar-column strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .bar-column span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .bar-track {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .attention-summary > div {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .attention-summary strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .attention-summary span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .decision-list {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .decision-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .decision-row span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .decision-action small {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .dashboard-list-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .dashboard-list-row span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .dashboard-product-icon {
+  background: #263244 !important;
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .category-top span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .category-bar {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .category-item small {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .recent-order-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .recent-order-row span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .recent-order-row > div:nth-child(2) {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .recent-order-row time {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .activity-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .activity-row span {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .product-summary-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .product-summary-card small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .product-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .product-card-top {
+  background: #1f2a3a !important;
+}
+
+.app-layout[data-theme="dark"] .product-status {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .product-status.low {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .product-status.out {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .product-detail {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .product-card-footer {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .order-summary-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .order-summary-card small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .order-create-panel {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .form-group label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .form-group input,
+.app-layout[data-theme="dark"] .form-group select,
+.app-layout[data-theme="dark"] .form-group textarea {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .selected-product-info {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .success-message {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .error-message {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .orders-table-header {
+  background: #263244 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .orders-table-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .orders-table-row span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-performance-header p {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-period {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-summary-icon {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .business-summary-icon.warning {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .business-summary-card span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-summary-card small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-panel-heading {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .business-heading-icon {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .business-panel-heading p {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-month-button {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .inventory-glance-summary {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .inventory-total-label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .inventory-legend span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .inventory-legend strong {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-stock-badge {
+  background: #1b2636 !important;
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .business-stock-column > strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .business-stock-column > span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-mini-card {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .business-mini-card span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-mini-card small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-product-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .business-rank {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .business-product-image {
+  border-color: #344257 !important;
+  background: #263244 !important;
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-product-name span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-product-sales span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-category-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .business-category-track {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .business-category-value {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-replenishment-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .business-replenishment-product span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-replenishment-stock span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-empty {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .business-empty strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .restock-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .restock-item {
+  background: #1b2636 !important;
+  border-color: #4a3626 !important;
+}
+
+.app-layout[data-theme="dark"] .restock-metric {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .product-form-card {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .notifications-panel {
+  border-color: #344257 !important;
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .notifications-panel-header {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-alert-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-alert-icon {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .stock-alert-label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .activity-feed-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .activity-feed-icon {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .activity-feed-row time {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .notification-empty {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .notification-empty strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .notification-empty span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .product-image-wrapper {
+  background: #263244 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .product-image-fallback {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-dashboard-header > div:first-child > p {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-health-card {
+  background: #1b2636 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-health-ring > div {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-health-ring span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-health-card > div:last-child > span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-health-card > div:last-child > small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-kpi-card {
+  background: #1b2636 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-kpi-card::after {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-kpi-icon,
+.app-layout[data-theme="dark"] .ss-section-icon {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-kpi-label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-card {
+  background: #1b2636 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-card-header {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-card-header p {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-header-control {
+  border-color: #344257 !important;
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-header-control span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-inventory-summary {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-inventory-total-label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-legend-list span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-stock-track {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-stock-badge {
+  background: #1b2636 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-stock-bar-item > span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-attention-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-attention-row span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-attention-product {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-attention-product span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-product-thumb {
+  background: #263244 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-product-thumb-fallback {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-ranking-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-rank {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-rank.muted {
+  color: #a9b6c9 !important;
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-ranking-copy span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-ranking-value {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-ranking-value span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-category-top span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-category-track {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-order-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-order-copy span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-order-row time {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-activity-row {
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-activity-row span {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-empty {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-stock-background {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .ss-stock-bar-item > strong {
+  color: #e8eef7 !important;
+}
+
+.app-layout[data-theme="dark"] .orders-page .dashboard-stats .stat-card > div:last-child > small {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner {
+  border-color: #4a3626 !important;
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner-icon {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner p {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-section-heading p {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .low-stock-page .stock-card {
+  background: #1b2636 !important;
+  border-color: #344257 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-image-wrapper {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-product-image {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-image-fallback {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .stock-status-badge.low {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .stock-status-badge.out {
+  background: #3a2a1f !important;
+}
+
+.app-layout[data-theme="dark"] .stock-category {
+  background: #26304f !important;
+}
+
+.app-layout[data-theme="dark"] .stock-info-label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-progress-label {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-progress-label strong {
+  color: #a9b6c9 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-progress {
+  background: #263244 !important;
+}
+
+.app-layout[data-theme="dark"] .stock-card-footer {
+  border-color: #344257 !important;
+}
+
+/* ---------- Hand-tuned exceptions ---------- */
+
+.app-layout[data-theme="dark"] .product-category {
+  color: #cbd5e1 !important;
+}
+
+.app-layout[data-theme="dark"] .health-ring {
+  border-color: #3a2a1f !important;
+  outline-color: #b85a14;
+}
+
+.app-layout[data-theme="dark"] .health-ring strong,
+.app-layout[data-theme="dark"] .profit-text,
+.app-layout[data-theme="dark"] .decision-action b {
+  color: var(--orange) !important;
+}
+
+.app-layout[data-theme="dark"] .profit-text {
+  color: #34c38f !important;
+}
+
+.app-layout[data-theme="dark"] .ss-kpi-note,
+.app-layout[data-theme="dark"] .ss-order-money span {
+  color: #34c38f !important;
+}
+
+.app-layout[data-theme="dark"] .stock-info-row .stock-warning { color: #fb923c !important; }
+.app-layout[data-theme="dark"] .stock-info-row .stock-danger  { color: #f87171 !important; }
+
+.app-layout[data-theme="dark"] .stock-category {
+  color: #b7c0ff !important;
+}
+
+.app-layout[data-theme="dark"] .stock-status-badge.low,
+.app-layout[data-theme="dark"] .product-status.low { background: #3b3217 !important; color: #fbbf24 !important; }
+.app-layout[data-theme="dark"] .stock-status-badge.out,
+.app-layout[data-theme="dark"] .product-status.out { background: #3d2226 !important; color: #f87171 !important; }
+.app-layout[data-theme="dark"] .product-status { color: #34c38f; }
+
+.app-layout[data-theme="dark"] .error-message   { color: #f87171 !important; }
+.app-layout[data-theme="dark"] .success-message { color: #34c38f !important; }
+
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner strong { color: #fecaca !important; }
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner p      { color: #fca5a5 !important; }
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner        { background: #2d1b22 !important; border-color: #5b2a30 !important; }
+.app-layout[data-theme="dark"] .low-stock-page .alert-banner-icon   { background: #4a232a !important; }
+
+.app-layout[data-theme="dark"] .inventory-glance-summary > strong,
+.app-layout[data-theme="dark"] .ss-inventory-total { color: #4aa8f5 !important; }
+
+.app-layout[data-theme="dark"] .ss-stock-badge.total { color: #168bea !important; }
+.app-layout[data-theme="dark"] .ss-stock-badge.in    { color: #22a84c !important; }
+.app-layout[data-theme="dark"] .ss-stock-badge.low   { color: #d39700 !important; }
+.app-layout[data-theme="dark"] .ss-stock-badge.out   { color: #e35b60 !important; }
+.app-layout[data-theme="dark"] .ss-stock-badge,
+.app-layout[data-theme="dark"] .business-stock-badge {
+  border-color: transparent !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.app-layout[data-theme="dark"] .ss-health-card > div:last-child > strong { color: #34c38f !important; }
+
+.app-layout[data-theme="dark"] .theme-toggle-btn:hover {
+  background: #293548 !important;
+  border-color: var(--orange) !important;
 }
