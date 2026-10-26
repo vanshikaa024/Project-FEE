@@ -6,6 +6,8 @@ import {
   User,
   Package,
   AlertTriangle,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import { useMemo } from "react";
@@ -18,6 +20,8 @@ function Navbar({
   products = [],
   searchTerm,
   setSearchTerm,
+  theme = "light",
+  onToggleTheme,
 }) {
   const navigate = useNavigate();
 
@@ -180,6 +184,18 @@ function Navbar({
       </div>
 
       <div className="navbar-right">
+        <button
+          className="theme-toggle-btn"
+          onClick={onToggleTheme}
+          type="button"
+          title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+          aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+          aria-pressed={theme === "dark"}
+        >
+          {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
+          <span>{theme === "light" ? "Dark mode" : "Light mode"}</span>
+        </button>
+
         <button
           className="notification-icon"
           onClick={() =>

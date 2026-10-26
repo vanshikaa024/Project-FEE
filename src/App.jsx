@@ -409,6 +409,23 @@ function SmartShelfApp() {
   const navigate =
     useNavigate();
 
+  /* ===================================================
+     APPEARANCE: LIGHT / DARK MODE
+     =================================================== */
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("smartshelf_theme");
+    return savedTheme === "dark" ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("smartshelf_theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => currentTheme === "light" ? "dark" : "light");
+  };
+
 
   /* ===================================================
      LOGIN
@@ -1497,6 +1514,7 @@ const generateReport = () => {
 
     return (
 
+      <div className="app-layout" data-theme={theme}>
       <Routes>
 
         <Route
@@ -1527,6 +1545,7 @@ const generateReport = () => {
         />
 
       </Routes>
+      </div>
 
     );
 
@@ -1539,7 +1558,7 @@ const generateReport = () => {
 
   return (
 
-    <div className="app-layout">
+    <div className="app-layout" data-theme={theme}>
 
 
       {/* =============================================
@@ -1606,6 +1625,10 @@ const generateReport = () => {
           setSearchTerm={
             setSearchTerm
           }
+
+          theme={theme}
+
+          onToggleTheme={toggleTheme}
         />
 
 

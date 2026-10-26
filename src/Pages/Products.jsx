@@ -8,7 +8,6 @@ import {
   BoxesIcon
 } from "lucide-react";
 
-
 function Products({
   products = [],
   searchTerm = ""
@@ -111,10 +110,8 @@ function Products({
                 Number(product.stock || 0) <
                 Number(product.minStock || 0);
 
-
               const isOutOfStock =
                 Number(product.stock || 0) === 0;
-
 
               return (
 
@@ -172,7 +169,6 @@ function Products({
                     </div>
 
                   </div>
-
 
                   {/* PRODUCT TOP */}
 
