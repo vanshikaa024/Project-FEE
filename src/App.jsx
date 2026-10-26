@@ -871,6 +871,58 @@ function SmartShelfApp() {
 
 
   /* ===================================================
+     EDIT PRODUCT
+     =================================================== */
+
+  const handleEditProduct = (product) => {
+    if (!product) return;
+
+    const name = window.prompt("Product name:", product.name);
+    if (name === null) return;
+
+    const priceInput = window.prompt("Selling price (₹):", String(product.price));
+    if (priceInput === null) return;
+
+    const stockInput = window.prompt("Stock quantity:", String(product.stock));
+    if (stockInput === null) return;
+
+    const price = Number(priceInput);
+    const stock = Number(stockInput);
+
+    if (!name.trim() || !Number.isFinite(price) || price < 0 || !Number.isFinite(stock) || stock < 0) {
+      window.alert("Please enter a valid product name, price, and stock quantity.");
+      return;
+    }
+
+    setProducts((previous) =>
+      previous.map((item) =>
+        Number(item.id) === Number(product.id)
+          ? { ...item, name: name.trim(), price, stock }
+          : item
+      )
+    );
+
+    addActivity(`${name.trim()} product details were updated.`, "success");
+  };
+
+  /* ===================================================
+     DELETE PRODUCT
+     =================================================== */
+
+  const handleDeleteProduct = (product) => {
+    if (!product) return;
+
+    const confirmed = window.confirm(`Delete "${product.name}" from inventory?`);
+    if (!confirmed) return;
+
+    setProducts((previous) =>
+      previous.filter((item) => Number(item.id) !== Number(product.id))
+    );
+
+    addActivity(`${product.name} was deleted from the inventory.`, "warning");
+  };
+
+  /* ===================================================
      CREATE SALE / ORDER
      =================================================== */
 
@@ -1678,15 +1730,11 @@ const generateReport = () => {
               element={
 
                 <Products
-
-                  products={
-                    products
-                  }
-
-                  searchTerm={
-                    searchTerm
-                  }
-
+                  products={products}
+                  searchTerm={searchTerm}
+                  onAddProduct={() => navigate("/add-product")}
+                  onEditProduct={handleEditProduct}
+                  onDeleteProduct={handleDeleteProduct}
                 />
 
               }
