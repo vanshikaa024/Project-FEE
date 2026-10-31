@@ -9,6 +9,7 @@ import {
   Route,
   Navigate,
   useNavigate,
+  useLocation,
 } from "react-router";
 
 import Sidebar from "./Components/Sidebar";
@@ -22,6 +23,7 @@ import LowStock from "./Pages/LowStock";
 import Orders from "./Pages/Orders";
 import Analytics from "./Pages/Analytics";
 import Notifications from "./Pages/Notifications";
+
 
 
 /* =====================================================
@@ -406,8 +408,8 @@ const demoActivities = [
 
 function SmartShelfApp() {
 
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   /* ===================================================
      APPEARANCE: LIGHT / DARK MODE
@@ -530,6 +532,53 @@ function SmartShelfApp() {
       });
 
     });
+
+  /* ===================================================
+     CRITICAL INVENTORY ALERT
+     Shows the single most urgent low-stock product on
+     Dashboard and Low Stock pages.
+     =================================================== */
+
+  const [showInventoryAlert, setShowInventoryAlert] = useState(false);
+
+  const criticalProduct = [...products].filter((product) => {
+    const stock = Number(product.stock || 0);
+    const minimum = Number(product.minStock || 0);
+    return stock === 0 || (minimum > 0 && stock < minimum);
+  }).sort((a, b) => {
+    const stockA = Number(a.stock || 0);
+    const stockB = Number(b.stock || 0);
+    if (stockA === 0 && stockB !== 0) return -1;
+    if (stockB === 0 && stockA !== 0) return 1;
+
+    const minA = Number(a.minStock || 0);
+    const minB = Number(b.minStock || 0);
+    const ratioA = minA > 0 ? stockA / minA : 1;
+    const ratioB = minB > 0 ? stockB / minB : 1;
+    return ratioA - ratioB;
+  })[0] || null;
+
+  useEffect(() => {
+    const alertAlreadyShown = localStorage.getItem("smartshelf_inventory_alert_shown") === "true";
+
+    if (alertAlreadyShown) {
+      setShowInventoryAlert(false);
+      return;
+    }
+
+    const shouldShowOnThisPage =
+      isLoggedIn &&
+      (location.pathname === "/" || location.pathname === "/low-stock");
+
+    if (shouldShowOnThisPage && criticalProduct) {
+      // Remember that the one-time alert has appeared, so it won't return
+      // after dismissal, navigation, or a page refresh.
+      localStorage.setItem("smartshelf_inventory_alert_shown", "true");
+      setShowInventoryAlert(true);
+    } else {
+      setShowInventoryAlert(false);
+    }
+  }, [isLoggedIn, location.pathname]);
 
   /* ===================================================
      ORDERS
@@ -1880,6 +1929,109 @@ const generateReport = () => {
             />
 
           </Routes>
+
+          {showInventoryAlert && criticalProduct && (
+            <div
+              className="inventory-alert-overlay"
+              role="presentation"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) {
+                  setShowInventoryAlert(false);
+                }
+              }}
+            >
+              <section
+                className="inventory-alert-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="inventory-alert-title"
+              >
+                <button
+                  type="button"
+                  className="inventory-alert-close"
+                  aria-label="Dismiss inventory alert"
+                  onClick={() => setShowInventoryAlert(false)}
+                >
+                  ×
+                </button>
+
+                <div className="inventory-alert-icon" aria-hidden="true">!</div>
+                <p className="inventory-alert-eyebrow">INVENTORY ATTENTION</p>
+                <h2 id="inventory-alert-title">
+                  {Number(criticalProduct.stock || 0) === 0
+                    ? "Product out of stock"
+                    : "Critical stock alert"}
+                </h2>
+                <p className="inventory-alert-description">
+                  This is the most urgent product that needs your attention.
+                </p>
+
+                <div className="inventory-alert-product">
+                  {criticalProduct.image ? (
+                    <img
+                      src={criticalProduct.image}
+                      alt={criticalProduct.name}
+                      className="inventory-alert-product-image"
+                    />
+                  ) : (
+                    <div className="inventory-alert-product-placeholder" aria-hidden="true">
+                      {String(criticalProduct.name || "P").charAt(0).toUpperCase()}
+                    </div>
+                  )}
+
+                  <div className="inventory-alert-product-info">
+                    <strong>{criticalProduct.name}</strong>
+                    <span>{criticalProduct.category || "Uncategorized"}</span>
+                  </div>
+
+                  <span className={`inventory-alert-status ${Number(criticalProduct.stock || 0) === 0 ? "is-out" : ""}`}>
+                    {Number(criticalProduct.stock || 0) === 0 ? "Out of stock" : "Low stock"}
+                  </span>
+                </div>
+
+                <div className="inventory-alert-stats">
+                  <div>
+                    <span>Available stock</span>
+                    <strong>{Number(criticalProduct.stock || 0)} units</strong>
+                  </div>
+                  <div>
+                    <span>Minimum required</span>
+                    <strong>{Number(criticalProduct.minStock || 0)} units</strong>
+                  </div>
+                  <div>
+                    <span>Units to replenish</span>
+                    <strong>
+                      {Math.max(
+                        0,
+                        Number(criticalProduct.minStock || 0) -
+                        Number(criticalProduct.stock || 0)
+                      )} units
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="inventory-alert-actions">
+                  <button
+                    type="button"
+                    className="inventory-alert-dismiss"
+                    onClick={() => setShowInventoryAlert(false)}
+                  >
+                    Dismiss
+                  </button>
+                  <button
+                    type="button"
+                    className="inventory-alert-view"
+                    onClick={() => {
+                      setShowInventoryAlert(false);
+                      navigate("/low-stock");
+                    }}
+                  >
+                    View Low Stock
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
 
         </main>
 
